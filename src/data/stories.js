@@ -1,98 +1,17 @@
-export const stories = [
-  {
-    id: 'veena-poovu',
-    title: 'വീണ പൂവ് · Veena Poovu',
-    subtitle: 'A fallen flower, a life remembered',
-    region: 'Kerala',
-    language: 'Malayalam',
-    inspiredLanguage: 'Malayalam original',
-    theme: 'Place & family',
-    duration: 'Original poem · 41 stanzas',
-    type: 'Source-linked original literature',
-    accent: 'green',
-    summary: 'Discover Kumaran Asan’s 1907 Malayalam poem through a guided reading trail and the complete original at Wikisource.',
-    note: 'Original poem by Kumaran Asan (1907). Read the complete Malayalam text in the source edition. An independently reviewed full English translation is not yet available in this prototype.',
-    fullTextStatus: 'source-linked',
-    translationStatus: 'pending-review',
-    author: 'Kumaran Asan',
-    published: '1907',
-    sourceTitle: 'Malayalam Wikisource — വീണ പൂവ്',
-    sourceUrl: 'https://ml.wikisource.org/wiki/Veena_Poovu',
-    textAccess: 'source-linked-public-domain-original',
-    parts: [
-      { title: 'Meet the fallen flower', paragraphs: ['Begin with the poem’s opening image. Follow the source link to read the original Malayalam stanzas 1–10. Notice how the poet speaks directly to the flower and recalls its early life. This is an editorial reading prompt, not the poem itself.'] },
-      { title: 'Beauty and attachment', paragraphs: ['Continue with original stanzas 11–20 at Wikisource. Observe the imagery of affection and the shifting emotional register. Read the Malayalam before consulting any interpretation.'] },
-      { title: 'The fall and its echoes', paragraphs: ['Read original stanzas 21–30 at Wikisource. Consider how the poem moves from one flower toward a wider reflection on impermanence.'] },
-      { title: 'The closing reflection', paragraphs: ['Finish original stanzas 31–41 at Wikisource. Return here only after reading the ending; the companion below offers one possible way to reflect on the whole poem.'] }
-    ],
-    essence: 'The fallen flower becomes a way to reflect on beauty, change and impermanence. This is an editorial interpretation, not a replacement for Asan’s Malayalam text.'
-  },
-  {
-    id: 'last-lantern',
-    title: 'The Last Lantern',
-    subtitle: 'A light kept alive for reasons no one quite understood',
-    region: 'Karnataka',
-    language: 'English',
-    inspiredLanguage: 'Kannada',
-    theme: 'Memory & belonging',
-    duration: '7 min',
-    type: 'Original editorial sample',
-    accent: 'amber',
-    summary: 'At the edge of a rain-soaked town, a small lantern becomes an unexpected invitation.',
-    note: 'Prototype-only original fiction. Not an adaptation or translation of a published Kannada work.',
-    parts: [
-      { title: 'The light outside', paragraphs: ['When the first monsoon rain reached the town, Meera kept the old lantern burning outside her tea shop. Nobody needed it anymore, her brother said. The bus stop had electric lights, and every traveller carried a phone.'] },
-      { title: 'The night the town went dark', paragraphs: ['One evening the power failed. Across the square, shops disappeared into rain. A young traveller, unable to read the local signs, followed the lantern to her doorway. Meera offered tea and drew a map on the back of a paper bag.'] },
-      { title: 'A visitor at the door', paragraphs: ['By morning the electricity had returned. The traveller had gone, leaving a note thanking her for the light. Her brother repaired the lantern’s crooked handle without being asked.'] },
-      { title: 'What the lantern meant', paragraphs: ['Meera understood that the light was no longer only a memory. It had become a small way of making room for someone new.'] },
-    ],
-    textAccess: 'original-demo',
-    essence: 'Objects can carry memory, but their meaning changes when they become useful to someone else.'
-  },
-  {
-    id: 'river-letter',
-    title: 'A Letter for the River',
-    subtitle: 'An unsent message that outlives its writer',
-    region: 'Kerala',
-    language: 'English',
-    inspiredLanguage: 'Malayalam',
-    theme: 'Place & family',
-    duration: '8 min',
-    type: 'Original editorial sample',
-    accent: 'green',
-    summary: 'A folded letter crosses generations without ever leaving the house.',
-    note: 'Prototype-only original fiction. Not an adaptation or translation of a published Malayalam work.',
-    parts: [
-      { title: 'The cupboard by the river', paragraphs: ['Every summer, Anu visited her grandmother’s home beside a slow river. In an old wooden cupboard she found a letter addressed simply to the river.'] },
-      { title: 'The letter', paragraphs: ['The letter thanked the water for carrying small boats, whispered conversations and the shadows of mango trees. It also asked the river to remember a village path that had vanished after the banks were rebuilt.'] },
-      { title: 'A story remembered', paragraphs: ['Her grandmother smiled when Anu read it aloud. “He was never good at saying goodbye,” she said.'] },
-      { title: 'A new page', paragraphs: ['Anu placed the letter back in its envelope and added a page of her own. Some places change while their stories continue to grow.'] },
-    ],
-    textAccess: 'original-demo',
-    essence: 'Places become archives when generations keep adding their memories.'
-  },
-  {
-    id: 'empty-seat',
-    title: 'The Empty Seat',
-    subtitle: 'A brief journey and a small act of attention',
-    region: 'Across India',
-    language: 'English',
-    inspiredLanguage: 'Original English',
-    theme: 'Everyday kindness',
-    duration: '6 min',
-    type: 'Original editorial sample',
-    accent: 'rose',
-    summary: 'A train journey turns a small gesture into a story worth passing on.',
-    note: 'Prototype-only original fiction. No claim of connection to a traditional tale or published literary work.',
-    parts: [
-      { title: 'The afternoon train', paragraphs: ['The afternoon train was crowded. Ravi held a book in one hand and a paper ticket in the other. Beside him, an empty seat had been kept for a passenger who had not yet arrived.'] },
-      { title: 'The next station', paragraphs: ['At the next station, an older woman stepped aboard with a basket and looked around uncertainly. Ravi moved his bag and invited her to sit.'] },
-      { title: 'Fields beyond the window', paragraphs: ['They spoke little. She pointed out fields beyond the window; he showed her the place in his book where he had stopped reading.'] },
-      { title: 'What travelled on', paragraphs: ['When she left, she thanked him as though he had done something extraordinary. He returned to his page but found himself watching the fields instead.'] },
-    ],
-    textAccess: 'original-demo',
-    essence: 'Sometimes a story is not what happens to us, but what we make possible for another person.'
-  }
-]
-
-export const filters = ['All', 'Karnataka', 'Kerala', 'Memory & belonging', 'Place & family', 'Everyday kindness']
+// Publication gate: only source-verified prose fiction with the complete original
+// and a complete, permission-cleared English translation may appear here.
+// Each part must contain ACTUAL narrative text, never summary or reading prompts.
+// Example schema:
+// { id, title, genre: 'short-story' | 'novella' | 'novel', originalLanguage,
+//   originalLocale, author, translator, sourceTitle, sourceUrl, published,
+//   rights: { original: 'public-domain' | 'licensed', english: 'original-translation' | 'licensed' },
+//   summary, essence, parts: [{ title, original: ['Full prose...'], english: ['Full translation...'] }] }
+// Do not publish entries with missing parts, placeholder prose, or incomplete translation.
+const catalogue = []
+export const stories = catalogue.filter(story =>
+  ['short-story', 'novella', 'novel'].includes(story.genre) &&
+  story.rights?.original && story.rights?.english &&
+  story.parts?.length > 0 &&
+  story.parts.every(part => part.original?.length && part.english?.length)
+)
+export const filters = ['All', 'Karnataka', 'Kerala']
