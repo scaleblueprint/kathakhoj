@@ -33,6 +33,7 @@ function App() {
   const [progress, setProgress] = useState(() => { try { return JSON.parse(localStorage.getItem(progressKey)) || {} } catch { return {} } })
   const [feedback, setFeedback] = useState('')
   const [readingLanguage, setReadingLanguage] = useState('original')
+  const [showPreview, setShowPreview] = useState(false)
 
   const filtered = useMemo(() => stories.filter(s => {
     const matchesQuery = [s.title, s.subtitle, s.region, s.theme, s.summary]
@@ -92,6 +93,8 @@ function App() {
     alert('Thanks — your feedback is saved in this browser for the prototype.')
   }
 
+  if (showPreview) return <div className="app"><header className="topbar"><button className="brand brand--button" onClick={() => setShowPreview(false)}>Katha<span>Khoj</span></button><button className="ghost" onClick={() => setShowPreview(false)}><ArrowLeft size={18}/> Back to discover</button></header><main className="story-page"><section className="story-hero"><div><div className="eyebrow">MALAYALAM · SHORT STORY · EDITORIAL INTAKE</div><h1>ദ്വാരക · Dwaraka</h1><p className="story-subtitle">Vengayil Kunhiraman Nayanar</p><p className="preview-status">In preparation — not yet a published bilingual edition</p><p>A lesser-known prose candidate. The complete source edition and English translation must be verified before the full reader can open.</p></div><div className="visual visual--green visual--hero"><div className="visual__glyph">അ</div><div className="visual__region">Malayalam literature</div><div className="visual__caption">SOURCE & TRANSLATION REVIEW</div></div></section><div className="story-layout"><article className="reader"><section className="summary-panel"><div className="eyebrow">SEPARATE SUMMARY</div><h2>About this work</h2><p>This selection is being researched. A verified editorial synopsis will appear here after the source text is checked. It will not be split into chapters or substituted for the story.</p></section><div className="part-reader"><div className="eyebrow">FULL-TEXT READER · PREVIEW OF STRUCTURE</div><h2>Original and English, part by part</h2><div className="language-switch"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => setReadingLanguage('original')}>മലയാളം · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => setReadingLanguage('english')}>English translation</button></div><div className="source-reading"><p><strong>{readingLanguage === 'original' ? 'Complete Malayalam narrative' : 'Complete English translation'}</strong></p><p>{readingLanguage === 'original' ? 'Awaiting verification of a complete reusable source edition. No excerpt or reading prompt will be presented as the original story.' : 'Awaiting a complete, reviewed translation aligned with the original text. No summary will be presented as a translation.'}</p><p className="muted">Reading parts will contain actual prose, not summaries. Publication remains locked until both languages are complete.</p></div></div></article><aside className="side-panel"><div className="side-card"><div className="eyebrow">PUBLICATION CHECKLIST</div><p>✓ Prose fiction, not poetry</p><p>✓ Candidate and author identified</p><p>○ Complete original edition verified</p><p>○ Complete English translation reviewed</p><p>○ Both texts aligned in the reader</p><p className="muted">This is an honest UI preview, not a claim that the full work is available.</p></div></aside></div></main></div>
+
   if (selected) {
     const story = stories.find(s => s.id === selected)
     if (!story) return null
@@ -136,7 +139,7 @@ function App() {
 
           <div className="story-layout">
             <article className="reader">
-              <div className="prototype-note"><Sparkles size={17}/><span><strong>Editorial provenance:</strong> {story.note}</span></div>
+              <div className="prototype-note"><Sparkles size={17}/><span><strong>English-only demonstration — not regional literature:</strong> {story.note}</span></div>
               <section className="summary-panel"><div className="eyebrow">STORY SUMMARY</div><h2>The story at a glance</h2><p>{story.summary}</p><p>{story.essence}</p></section>
               <div id="reading-part" className="part-reader">
                 <div className="eyebrow">{complete ? 'STORY COMPLETE' : `PART ${partIndex + 1} OF ${story.parts.length}`}</div>
@@ -205,13 +208,13 @@ function App() {
           <div className="hero__copy">
             <div className="eyebrow"><Sparkles size={15}/> REDISCOVER INDIA THROUGH ITS STORIES</div>
             <h1>Stories beyond<br/><em>the familiar.</em></h1>
-            <p>Discover remarkable literary worlds from across India — thoughtfully introduced, easy to enter, and designed to make you want to explore the original work.</p>
+            <p>Lesser-known Indian short stories and novels, with one clear summary and the complete narrative in its original language and English — never poems or summary-filled chapters.</p>
             <div className="hero__actions">
               <button className="primary" onClick={() => document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}>Start discovering <ArrowRight size={18}/></button>
-              <button className="secondary" onClick={() => stories[0] && setSelected(stories[0].id)} disabled={!stories.length}><Headphones size={18}/> Try a story</button>
+              <button className="secondary" onClick={() => { setReadingLanguage('original'); setShowPreview(true) }}><BookOpen size={18}/> Preview bilingual reader</button>
             </div>
             <div className="format-strip">
-              <span><BookOpen size={17}/> Read</span>
+              <span><BookOpen size={17}/> Original + English</span>
               <span><Headphones size={17}/> Listen</span>
               <span><Clapperboard size={17}/> Watch</span>
             </div>
@@ -228,11 +231,13 @@ function App() {
           <div className="section-head">
             <div>
               <div className="eyebrow">BEGIN YOUR JOURNEY</div>
-              <h2>Discover a story</h2>
+              <h2>Discover lesser-known prose</h2>
             </div>
-            <p>Read original English demonstration stories while source-verified bilingual literary editions are prepared.</p>
+            <p>Explore the first Malayalam candidate and see the bilingual reader structure. English-only demonstration fiction remains available separately.</p>
           </div>
 
+          <div className="candidate-card"><div><div className="eyebrow">FIRST REGIONAL SELECTION · IN PREPARATION</div><h3>ദ്വാരക <span>· Dwaraka</span></h3><p>Malayalam short story by Vengayil Kunhiraman Nayanar. A separate summary and complete original/English reading experience are being prepared.</p><div className="candidate-tags"><span>Prose only</span><span>Original Malayalam</span><span>English translation</span><span>Source verification pending</span></div></div><button className="primary" onClick={() => { setReadingLanguage('original'); setShowPreview(true) }}>View bilingual reader preview <ArrowRight size={18}/></button></div>
+          <div className="demo-heading"><div className="eyebrow">ENGLISH-ONLY DEMONSTRATIONS</div><h3>Try the reading controls</h3><p>These are newly written English stories, not translations of Kannada or Malayalam literature.</p></div>
           <div className="controls">
             <div className="search"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search stories, places or themes…" /></div>
             <div className="chips">
