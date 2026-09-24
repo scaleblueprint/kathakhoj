@@ -36,7 +36,7 @@ function App() {
   const [showPreview, setShowPreview] = useState(false)
 
   const filtered = useMemo(() => stories.filter(s => {
-    const matchesQuery = [s.title, s.subtitle, s.region, s.theme, s.summary?.original, s.summary?.english]
+    const matchesQuery = [s.title, s.subtitle, s.region, s.theme, typeof s.summary === 'string' ? s.summary : s.summary?.original, s.summary?.english]
       .join(' ').toLowerCase().includes(query.toLowerCase())
     const matchesFilter = filter === 'All' || s.region === filter || s.theme === filter
     return matchesQuery && matchesFilter
@@ -73,7 +73,7 @@ function App() {
       return
     }
     const part = story.parts[partIndex]
-    const lines = part ? part[readingLanguage] : [story.essence]
+    const lines = part ? (part[readingLanguage]?.length ? part[readingLanguage] : part.original) : [story.essence]
     const utterance = new SpeechSynthesisUtterance([story.title, part?.title || 'Literary companion', ...lines].join(' '))
     utterance.lang = readingLanguage === 'original' ? story.originalLocale : 'en-IN'
     utterance.rate = 0.93
@@ -139,15 +139,15 @@ function App() {
 
           <div className="story-layout">
             <article className="reader">
-              <div className="prototype-note"><Sparkles size={17}/><span><strong>Source and translation:</strong> {story.note}</span></div>
-              <section className="summary-panel"><div className="eyebrow">STORY SUMMARY · NOT A CHAPTER</div><h2>The story at a glance</h2><div className="language-switch" role="group" aria-label="Summary and story language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => setReadingLanguage('original')}>{story.originalLanguage} · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => setReadingLanguage('english')}>English translation</button></div><p lang={readingLanguage === 'original' ? story.originalLocale : 'en'}>{story.summary[readingLanguage]}</p></section>
+              <div className="prototype-note"><Sparkles size={17}/><span><strong>{story.originalLanguage === 'English' ? 'Demo library:' : 'Source and translation:'}</strong> {story.note}</span></div>
+              <section className="summary-panel"><div className="eyebrow">STORY SUMMARY · NOT A CHAPTER</div><h2>The story at a glance</h2><div className="language-switch" role="group" aria-label="Summary and story language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => setReadingLanguage('original')}>{story.originalLanguage} · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => setReadingLanguage('english')}>English translation</button></div>}<p lang={readingLanguage === 'original' ? story.originalLocale : 'en'}>{typeof story.summary === 'string' ? story.summary : story.summary[readingLanguage]}</p></section>
               <div id="reading-part" className="part-reader">
                 <div className="eyebrow">{complete ? 'STORY COMPLETE' : `PART ${partIndex + 1} OF ${story.parts.length}`}</div>
-                {<div className="language-switch" role="group" aria-label="Reading language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('original') }}>{story.originalLanguage} · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('english') }}>English translation</button></div>}
+                {story.parts[0].english.length > 0 && <div className="language-switch" role="group" aria-label="Reading language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('original') }}>{story.originalLanguage} · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('english') }}>English translation</button></div>}
                 <div className="progress-track" role="progressbar" aria-valuenow={partIndex} aria-valuemin="0" aria-valuemax={story.parts.length} aria-label="Story progress"><span style={{ width: `${partIndex / story.parts.length * 100}%` }} /></div>
                 {complete ? <section className="essence"><h2>The literary companion</h2><p>{story.essence}</p><p className="muted">You have reached the end of the reading trail. For this selection, the complete original remains available through the linked source edition.</p></section> : <>
                   <h2>{currentPart.title}</h2>
-                  {currentPart[readingLanguage].map((p, i) => <p key={i} lang={readingLanguage === 'original' ? story.originalLocale : 'en'}>{p}</p>)}
+                  {(currentPart[readingLanguage]?.length ? currentPart[readingLanguage] : currentPart.original).map((p, i) => <p key={i} lang={readingLanguage === 'original' ? story.originalLocale : 'en'}>{p}</p>)}
                 </>}
                 <div className="part-navigation">
                   <button className="secondary" disabled={partIndex === 0} onClick={() => setPart(story.id, partIndex - 1)}><ArrowLeft size={17}/> Previous</button>
@@ -169,7 +169,7 @@ function App() {
               <div className="side-card">
                 <div className="eyebrow">EDITORIAL STATUS</div>
                 <p><strong>{story.type}</strong></p>
-                <p className="muted">Complete original-language narrative and complete English translation, aligned chapter by chapter.</p>
+                <p className="muted">{story.originalLanguage === 'English' ? 'Original English demonstration fiction. No Kannada or Malayalam translation is claimed.' : 'Complete original-language narrative and English translation, aligned chapter by chapter.'}</p>
                 {sourceLinked && <p className="muted"><strong>Author:</strong> {story.author}<br/><strong>First published:</strong> {story.published}<br/><strong>Translation:</strong> {story.translator}<br/><a href={story.sourceUrl} target="_blank" rel="noopener noreferrer">{story.sourceTitle} ↗</a></p>}
                 <p className="muted">The production catalogue will only publish works after source, rights and human literary review are recorded.</p>
               </div>
@@ -233,11 +233,11 @@ function App() {
               <div className="eyebrow">BEGIN YOUR JOURNEY</div>
               <h2>Discover lesser-known prose</h2>
             </div>
-            <p>Original-language and English summaries, followed by complete bilingual chapters. No poems or English-only demonstrations.</p>
+            <p>Regional catalogue: original-language and English summaries plus full bilingual chapters. The English-only demos remain separately labelled below while the first edition is prepared.</p>
           </div>
 
           <div className="candidate-card"><div><div className="eyebrow">FIRST REGIONAL SELECTION · IN PREPARATION</div><h3>ദ്വാരക <span>· Dwaraka</span></h3><p>Malayalam short story by Vengayil Kunhiraman Nayanar. A separate summary and complete original/English reading experience are being prepared.</p><div className="candidate-tags"><span>Prose only</span><span>Original Malayalam</span><span>English translation</span><span>Source verification pending</span></div></div><button className="primary" onClick={() => { setReadingLanguage('original'); setShowPreview(true) }}>View bilingual reader preview <ArrowRight size={18}/></button></div>
-          <div className="demo-heading"><div className="eyebrow">VERIFIED BILINGUAL EDITIONS</div><h3>Read the complete story in either language</h3><p>Only works with a complete original and complete English translation will appear below.</p></div>
+          <div className="demo-heading"><div className="eyebrow">DEMO LIBRARY · ENGLISH ORIGINALS</div><h3>Readable stories restored</h3><p>The Last Lantern and A Letter for the River are original English demonstrations, not regional literary translations. Verified bilingual editions will appear in the regional catalogue when complete.</p></div>
           <div className="controls">
             <div className="search"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search stories, places or themes…" /></div>
             <div className="chips">
@@ -255,7 +255,7 @@ function App() {
                 <div className="story-card__body">
                   <div className="eyebrow">{story.region} · {story.theme}</div>
                   <h3>{story.title}</h3>
-                  <p>{story.summary.english}</p>
+                  <p>{typeof story.summary === 'string' ? story.summary : story.summary.english}</p>
                   <div className="story-card__footer">
                     <span>{progress[story.id] > 0 ? `Continue · ${Math.min(progress[story.id] + 1, story.parts.length)} / ${story.parts.length}` : `${story.parts.length} parts · ${story.duration}`}</span>
                     <button onClick={() => setSelected(story.id)}>Explore <ArrowRight size={17}/></button>
