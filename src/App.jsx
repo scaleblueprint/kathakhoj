@@ -32,6 +32,7 @@ function App() {
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(() => { try { return JSON.parse(localStorage.getItem(progressKey)) || {} } catch { return {} } })
   const [feedback, setFeedback] = useState('')
+  const [readingLanguage, setReadingLanguage] = useState('original')
 
   const filtered = useMemo(() => stories.filter(s => {
     const matchesQuery = [s.title, s.subtitle, s.region, s.theme, s.summary]
@@ -134,12 +135,14 @@ function App() {
           <div className="story-layout">
             <article className="reader">
               <div className="prototype-note"><Sparkles size={17}/><span><strong>{sourceLinked ? 'Original literature:' : 'Prototype note:'}</strong> {story.note}</span></div>
+              <section className="summary-panel"><div className="eyebrow">STORY SUMMARY</div><h2>The story at a glance</h2><p>{story.summary}</p><p>{story.essence}</p></section>
               <div id="reading-part" className="part-reader">
                 <div className="eyebrow">{complete ? 'STORY COMPLETE' : `PART ${partIndex + 1} OF ${story.parts.length}`}</div>
+                {sourceLinked && <div className="language-switch" role="group" aria-label="Reading language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => setReadingLanguage('original')}>മലയാളം · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => setReadingLanguage('english')}>English translation</button></div>}
                 <div className="progress-track" role="progressbar" aria-valuenow={partIndex} aria-valuemin="0" aria-valuemax={story.parts.length} aria-label="Story progress"><span style={{ width: `${partIndex / story.parts.length * 100}%` }} /></div>
-                {complete ? <section className="essence"><h2>The literary companion</h2><p>{story.essence}</p><p className="muted">You have reached the end of this original demonstration story. The original text remains available through the linked source edition.</p></section> : <>
+                {complete ? <section className="essence"><h2>The literary companion</h2><p>{story.essence}</p><p className="muted">You have reached the end of the reading trail. For this selection, the complete original remains available through the linked source edition.</p></section> : <>
                   <h2>{currentPart.title}</h2>
-                  {currentPart.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+                  {sourceLinked ? <div className="source-reading"><p>{readingLanguage === 'original' ? 'The original Malayalam text is available in full at the source edition. The chapter divisions here are a reading guide; they do not replace the poem.' : 'A complete, reviewed English translation is being prepared. This reading guide is not a translation and will not be presented as one.'}</p><a className="secondary" href={story.sourceUrl} target="_blank" rel="noopener noreferrer">{readingLanguage === 'original' ? 'Open complete original text' : 'View Malayalam source'} <ArrowRight size={17}/></a><p className="muted">{currentPart.paragraphs[0]}</p></div> : currentPart.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
                 </>}
                 <div className="part-navigation">
                   <button className="secondary" disabled={partIndex === 0} onClick={() => setPart(story.id, partIndex - 1)}><ArrowLeft size={17}/> Previous</button>
