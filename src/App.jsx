@@ -142,7 +142,7 @@ function App() {
               <div className="prototype-note"><Sparkles size={17}/><span><strong>{story.originalLanguage === 'English' ? 'Demo library:' : 'Source and translation:'}</strong> {story.note}</span></div>
               <section className="summary-panel"><div className="eyebrow">STORY SUMMARY · NOT A CHAPTER</div><h2>The story at a glance</h2><div className="language-switch" role="group" aria-label="Summary and story language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => setReadingLanguage('original')}>{story.originalLanguage} · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => setReadingLanguage('english')}>English translation</button></div>}<p lang={readingLanguage === 'original' ? story.originalLocale : 'en'}>{typeof story.summary === 'string' ? story.summary : story.summary[readingLanguage]}</p></section>
               <div id="reading-part" className="part-reader">
-                <div className="eyebrow">{complete ? 'STORY COMPLETE' : `PART ${partIndex + 1} OF ${story.parts.length}`}</div>
+                <div className="eyebrow">{complete ? 'STORY COMPLETE' : `CHAPTER ${partIndex + 1} OF ${story.parts.length}`}</div>
                 {story.parts[0].english.length > 0 && <div className="language-switch" role="group" aria-label="Reading language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('original') }}>{story.originalLanguage} · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('english') }}>English translation</button></div>}
                 <div className="progress-track" role="progressbar" aria-valuenow={partIndex} aria-valuemin="0" aria-valuemax={story.parts.length} aria-label="Story progress"><span style={{ width: `${partIndex / story.parts.length * 100}%` }} /></div>
                 {complete ? <section className="essence"><h2>The literary companion</h2><p>{story.essence}</p><p className="muted">You have reached the end of the reading trail. For this selection, the complete original remains available through the linked source edition.</p></section> : <>
@@ -151,7 +151,7 @@ function App() {
                 </>}
                 <div className="part-navigation">
                   <button className="secondary" disabled={partIndex === 0} onClick={() => setPart(story.id, partIndex - 1)}><ArrowLeft size={17}/> Previous</button>
-                  <span>{complete ? 'Finished' : `Part ${partIndex + 1} / ${story.parts.length}`}</span>
+                  <span>{complete ? 'Finished' : `Chapter ${partIndex + 1} / ${story.parts.length}`}</span>
                   <button className="primary" onClick={() => setPart(story.id, complete ? 0 : partIndex + 1)}>{complete ? 'Read again' : partIndex === story.parts.length - 1 ? 'Finish story' : 'Next part'} <ArrowRight size={17}/></button>
                 </div>
               </div>
@@ -237,7 +237,7 @@ function App() {
           </div>
 
           <div className="candidate-card"><div><div className="eyebrow">FIRST REGIONAL SELECTION · IN PREPARATION</div><h3>ദ്വാരക <span>· Dwaraka</span></h3><p>Malayalam short story by Vengayil Kunhiraman Nayanar. A separate summary and complete original/English reading experience are being prepared.</p><div className="candidate-tags"><span>Prose only</span><span>Original Malayalam</span><span>English translation</span><span>Source verification pending</span></div></div><button className="primary" onClick={() => { setReadingLanguage('original'); setShowPreview(true) }}>View bilingual reader preview <ArrowRight size={18}/></button></div>
-          <div className="demo-heading"><div className="eyebrow">DEMO LIBRARY · ENGLISH ORIGINALS</div><h3>Readable stories restored</h3><p>The Last Lantern and A Letter for the River are original English demonstrations, not regional literary translations. Verified bilingual editions will appear in the regional catalogue when complete.</p></div>
+          <div className="demo-heading"><div className="eyebrow">READABLE STORIES</div><h3>Original-language and English reading</h3><p>The Blue Door is complete in Kannada and English. The other two stories remain clearly labelled English-only demonstrations. A verified historical literary edition is still in preparation.</p></div>
           <div className="controls">
             <div className="search"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search stories, places or themes…" /></div>
             <div className="chips">
@@ -253,12 +253,12 @@ function App() {
                 </button>
                 <Visual story={story} />
                 <div className="story-card__body">
-                  <div className="eyebrow">{story.region} · {story.theme}</div>
+                  <div className="eyebrow">{story.region} · {story.originalLanguage === 'English' ? 'ENGLISH-ONLY DEMO' : 'KANNADA + ENGLISH · COMPLETE'} · {story.theme}</div>
                   <h3>{story.title}</h3>
                   <p>{typeof story.summary === 'string' ? story.summary : story.summary.english}</p>
                   <div className="story-card__footer">
-                    <span>{progress[story.id] > 0 ? `Continue · ${Math.min(progress[story.id] + 1, story.parts.length)} / ${story.parts.length}` : `${story.parts.length} parts · ${story.duration}`}</span>
-                    <button onClick={() => setSelected(story.id)}>Explore <ArrowRight size={17}/></button>
+                    <span>{progress[story.id] > 0 ? `Continue · ${Math.min(progress[story.id] + 1, story.parts.length)} / ${story.parts.length}` : `${story.parts.length} chapters · ${story.duration}`}</span>
+                    <button onClick={() => { setReadingLanguage('original'); setSelected(story.id) }}>Read full story <ArrowRight size={17}/></button>
                   </div>
                 </div>
               </article>
