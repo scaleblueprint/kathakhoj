@@ -34,6 +34,10 @@ function App() {
   const [feedback, setFeedback] = useState('')
   const [readingLanguage, setReadingLanguage] = useState('original')
   const [showPreview, setShowPreview] = useState(false)
+  const [historicalText, setHistoricalText] = useState([])
+  const [historicalError, setHistoricalError] = useState('')
+  const [historicalLoading, setHistoricalLoading] = useState(false)
+  const [historicalPart, setHistoricalPart] = useState(0)
 
   const filtered = useMemo(() => stories.filter(s => {
     const matchesQuery = [s.title, s.subtitle, s.region, s.theme, typeof s.summary === 'string' ? s.summary : s.summary?.original, s.summary?.english]
@@ -93,7 +97,28 @@ function App() {
     alert('Thanks — your feedback is saved in this browser for the prototype.')
   }
 
-  if (showPreview) return <div className="app"><header className="topbar"><button className="brand brand--button" onClick={() => setShowPreview(false)}>Katha<span>Khoj</span></button><button className="ghost" onClick={() => setShowPreview(false)}><ArrowLeft size={18}/> Back to discover</button></header><main className="story-page"><section className="story-hero"><div><div className="eyebrow">MALAYALAM · SHORT STORY · EDITORIAL INTAKE</div><h1>ദ്വാരക · Dwaraka</h1><p className="story-subtitle">Vengayil Kunhiraman Nayanar</p><p className="preview-status">In preparation — not yet a published bilingual edition</p><p>A lesser-known prose candidate. The complete source edition and English translation must be verified before the full reader can open.</p></div><div className="visual visual--green visual--hero"><div className="visual__glyph">അ</div><div className="visual__region">Malayalam literature</div><div className="visual__caption">SOURCE & TRANSLATION REVIEW</div></div></section><div className="story-layout"><article className="reader"><section className="summary-panel"><div className="eyebrow">SEPARATE SUMMARY</div><h2>About this work</h2><p>This selection is being researched. A verified editorial synopsis will appear here after the source text is checked. It will not be split into chapters or substituted for the story.</p></section><div className="part-reader"><div className="eyebrow">FULL-TEXT READER · PREVIEW OF STRUCTURE</div><h2>Original and English, part by part</h2><div className="language-switch"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => setReadingLanguage('original')}>മലയാളം · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => setReadingLanguage('english')}>English translation</button></div><div className="source-reading"><p><strong>{readingLanguage === 'original' ? 'Complete Malayalam narrative' : 'Complete English translation'}</strong></p><p>{readingLanguage === 'original' ? 'Awaiting verification of a complete reusable source edition. No excerpt or reading prompt will be presented as the original story.' : 'Awaiting a complete, reviewed translation aligned with the original text. No summary will be presented as a translation.'}</p><p className="muted">Reading parts will contain actual prose, not summaries. Publication remains locked until both languages are complete.</p></div></div></article><aside className="side-panel"><div className="side-card"><div className="eyebrow">PUBLICATION CHECKLIST</div><p>✓ Prose fiction, not poetry</p><p>✓ Candidate and author identified</p><p>○ Complete original edition verified</p><p>○ Complete English translation reviewed</p><p>○ Both texts aligned in the reader</p><p className="muted">This is an honest UI preview, not a claim that the full work is available.</p></div></aside></div></main></div>
+  const openHistorical = async () => {
+    setShowPreview(true)
+    setReadingLanguage('original')
+    setHistoricalPart(0)
+    setHistoricalLoading(true)
+    setHistoricalError('')
+    try {
+      const url = 'https://ml.wikisource.org/w/api.php?action=parse&page=Dvaraka&prop=text&format=json&origin=*'
+      const response = await fetch(url)
+      if (!response.ok) throw new Error('Source service unavailable')
+      const payload = await response.json()
+      const doc = new DOMParser().parseFromString(payload.parse.text['*'], 'text/html')
+      const root = doc.querySelector('.mw-parser-output')
+      if (!root) throw new Error('Source text missing')
+      const paragraphs = [...root.querySelectorAll(':scope > p')].map(p => p.textContent.trim()).filter(Boolean)
+      if (paragraphs.length < 15) throw new Error('The complete source could not be confirmed')
+      setHistoricalText(paragraphs)
+    } catch (error) { setHistoricalError('Could not load the original from Malayalam Wikisource. Use the source edition link below.') }
+    finally { setHistoricalLoading(false) }
+  }
+
+  if (showPreview) return <div className="app"><header className="topbar"><button className="brand brand--button" onClick={() => setShowPreview(false)}>Katha<span>Khoj</span></button><button className="ghost" onClick={() => setShowPreview(false)}><ArrowLeft size={18}/> Back to discover</button></header><main className="story-page"><section className="story-hero"><div><div className="eyebrow">HISTORICAL MALAYALAM SHORT STORY · 1893</div><h1>ദ്വാരക · Dwaraka</h1><p className="story-subtitle">Vengayil Kunhiraman Nayanar</p><p>Authentic historical fiction. The original Malayalam text is loaded from its Wikisource edition; the English translation is not yet available.</p><a href="https://ml.wikisource.org/wiki/Dvaraka" target="_blank" rel="noopener noreferrer">View original source edition ↗</a></div><div className="visual visual--green visual--hero"><div className="visual__glyph">അ</div><div className="visual__region">Malayalam literature</div><div className="visual__caption">ORIGINAL WORK · 1893</div></div></section><div className="story-layout"><article className="reader"><section className="summary-panel"><div className="eyebrow">ABOUT THIS WORK</div><h2>ദ്വാരക</h2><p><strong>Author:</strong> Vengayil Kunhiraman Nayanar · <strong>Published:</strong> 1893 · <strong>Original language:</strong> Malayalam</p><p><strong>Source edition:</strong> Malayalam Wikisource · <strong>English translator:</strong> Not yet assigned</p><div className="eyebrow">SUMMARY · SEPARATE FROM THE STORY</div><p>An engineer working on an undersea telegraph cable imagines an extraordinary encounter with the legendary city of Dwaraka. The story blends technology, mythology and the narrator's imagination.</p></section><div className="part-reader"><div className="eyebrow">ACTUAL ORIGINAL · READING SECTIONS</div><div className="language-switch"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => setReadingLanguage('original')}>മലയാളം · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => setReadingLanguage('english')}>English translation · Pending</button></div>{readingLanguage === 'english' ? <p className="muted">A complete English translation has not yet been prepared. The original Malayalam text remains available; no summary is being passed off as a translation.</p> : historicalLoading ? <p>Loading the historical original…</p> : historicalError ? <p role="alert">{historicalError}</p> : <><h2>Reading section {historicalPart + 1} of {Math.ceil(historicalText.length / 5)}</h2>{historicalText.slice(historicalPart * 5, historicalPart * 5 + 5).map((p,i) => <p lang="ml" key={i}>{p}</p>)}<div className="part-navigation"><button className="secondary" disabled={historicalPart === 0} onClick={() => setHistoricalPart(historicalPart - 1)}>Previous</button><button className="primary" disabled={(historicalPart + 1) * 5 >= historicalText.length} onClick={() => setHistoricalPart(historicalPart + 1)}>Next section <ArrowRight size={17}/></button></div></>}</div></article><aside className="side-panel"><div className="side-card"><div className="eyebrow">SOURCE & EDITION</div><p>Original author: Vengayil Kunhiraman Nayanar</p><p>First publication: 1893</p><p>Original text: Malayalam Wikisource</p><p>English translation: Not yet published in KathaKhoj</p><p className="muted">Reading sections divide the existing prose for navigation; they are not newly invented chapters.</p></div></aside></div></main></div>
 
   if (selected) {
     const story = stories.find(s => s.id === selected)
@@ -225,7 +250,7 @@ function App() {
             <p>Lesser-known Indian short stories and novels, with one clear summary and the complete narrative in its original language and English — never poems or summary-filled chapters.</p>
             <div className="hero__actions">
               <button className="primary" onClick={() => document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}>Start discovering <ArrowRight size={18}/></button>
-              <button className="secondary" onClick={() => { setReadingLanguage('original'); setShowPreview(true) }}><BookOpen size={18}/> Preview bilingual reader</button>
+              <button className="secondary" onClick={() => { openHistorical() }}><BookOpen size={18}/> Preview bilingual reader</button>
             </div>
             <div className="format-strip">
               <span><BookOpen size={17}/> Original + English</span>
@@ -250,7 +275,7 @@ function App() {
             <p>Regional catalogue: original-language and English summaries plus full bilingual chapters. The English-only demos remain separately labelled below while the first edition is prepared.</p>
           </div>
 
-          <div className="candidate-card"><div><div className="eyebrow">FIRST REGIONAL SELECTION · IN PREPARATION</div><h3>ദ്വാരക <span>· Dwaraka</span></h3><p>Malayalam short story by Vengayil Kunhiraman Nayanar. A separate summary and complete original/English reading experience are being prepared.</p><div className="candidate-tags"><span>Prose only</span><span>Original Malayalam</span><span>English translation</span><span>Source verification pending</span></div></div><button className="primary" onClick={() => { setReadingLanguage('original'); setShowPreview(true) }}>View bilingual reader preview <ArrowRight size={18}/></button></div>
+          <div className="candidate-card"><div><div className="eyebrow">FIRST REGIONAL SELECTION · IN PREPARATION</div><h3>ദ്വാരക <span>· Dwaraka</span></h3><p>Malayalam short story by Vengayil Kunhiraman Nayanar. A separate summary and complete original/English reading experience are being prepared.</p><div className="candidate-tags"><span>Prose only</span><span>Original Malayalam</span><span>English translation</span><span>Source verification pending</span></div></div><button className="primary" onClick={() => { openHistorical() }}>View bilingual reader preview <ArrowRight size={18}/></button></div>
           <div className="demo-heading"><div className="eyebrow">READABLE STORIES</div><h3>Original-language and English reading</h3><p>The Blue Door is complete in Kannada and English. The other two stories remain clearly labelled English-only demonstrations. A verified historical literary edition is still in preparation.</p></div>
           <div className="controls">
             <div className="search"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search stories, places or themes…" /></div>
