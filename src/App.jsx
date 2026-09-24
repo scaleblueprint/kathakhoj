@@ -7,6 +7,7 @@ import { filters, stories } from './data/stories.js'
 
 const saveKey = 'kathakhoj:saved'
 const feedbackKey = 'kathakhoj:feedback'
+const progressKey = 'kathakhoj:progress'
 
 function Visual({ story, hero = false }) {
   return (
@@ -29,6 +30,7 @@ function App() {
     try { return JSON.parse(localStorage.getItem(saveKey)) || [] } catch { return [] }
   })
   const [playing, setPlaying] = useState(false)
+  const [progress, setProgress] = useState(() => { try { return JSON.parse(localStorage.getItem(progressKey)) || {} } catch { return {} } })
   const [feedback, setFeedback] = useState('')
 
   const filtered = useMemo(() => stories.filter(s => {
@@ -46,13 +48,22 @@ function App() {
     }
   }, [selected])
 
+  const setPart = (id, index) => {
+    window.speechSynthesis?.cancel()
+    setPlaying(false)
+    const next = { ...progress, [id]: index }
+    setProgress(next)
+    localStorage.setItem(progressKey, JSON.stringify(next))
+    document.getElementById('reading-part')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const toggleSaved = (id) => {
     const next = saved.includes(id) ? saved.filter(x => x !== id) : [...saved, id]
     setSaved(next)
     localStorage.setItem(saveKey, JSON.stringify(next))
   }
 
-  const speak = (story) => {
+  const speak = (story, partIndex) => {
     if (!('speechSynthesis' in window)) return
     if (playing) {
       window.speechSynthesis.cancel()
@@ -60,7 +71,7 @@ function App() {
       return
     }
     const utterance = new SpeechSynthesisUtterance(
-      [story.title, story.subtitle, ...story.paragraphs, story.essence].join('. ')
+      [story.title, story.parts[partIndex]?.title || 'Literary companion', ...(story.parts[partIndex]?.paragraphs || [story.essence])].join('. ')
     )
     utterance.rate = 0.93
     utterance.pitch = 0.92
@@ -82,6 +93,9 @@ function App() {
   if (selected) {
     const story = stories.find(s => s.id === selected)
     const isSaved = saved.includes(story.id)
+    const partIndex = Math.min(progress[story.id] || 0, story.parts.length)
+    const complete = partIndex === story.parts.length
+    const currentPart = story.parts[partIndex]
     return (
       <div className="app">
         <header className="topbar">
@@ -102,9 +116,9 @@ function App() {
                 <span><Clapperboard size={16} /> Watch preview</span>
               </div>
               <div className="story-actions">
-                <button className="primary" onClick={() => speak(story)}>
+                <button className="primary" onClick={() => speak(story, partIndex)}>
                   {playing ? <Pause size={18}/> : <Play size={18}/>}
-                  {playing ? 'Pause narration' : 'Listen now'}
+                  {playing ? 'Stop narration' : 'Listen to this part'}
                 </button>
                 <button className="secondary" onClick={() => toggleSaved(story.id)}>
                   {isSaved ? <BookmarkCheck size={18}/> : <Bookmark size={18}/>}
@@ -118,24 +132,34 @@ function App() {
           <div className="story-layout">
             <article className="reader">
               <div className="prototype-note"><Sparkles size={17}/><span><strong>Prototype note:</strong> {story.note}</span></div>
-              {story.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
-              <section className="essence">
-                <div className="eyebrow">THE ESSENCE</div>
-                <h2>Why this story stays with you</h2>
-                <p>{story.essence}</p>
-              </section>
+              <div id="reading-part" className="part-reader">
+                <div className="eyebrow">{complete ? 'STORY COMPLETE' : `PART ${partIndex + 1} OF ${story.parts.length}`}</div>
+                <div className="progress-track" role="progressbar" aria-valuenow={partIndex} aria-valuemin="0" aria-valuemax={story.parts.length} aria-label="Story progress"><span style={{ width: `${partIndex / story.parts.length * 100}%` }} /></div>
+                {complete ? <section className="essence"><h2>The literary companion</h2><p>{story.essence}</p><p className="muted">You have reached the end of this original demonstration story. The full literary catalogue will provide author, source edition, language, and rights information here.</p></section> : <>
+                  <h2>{currentPart.title}</h2>
+                  {currentPart.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+                </>}
+                <div className="part-navigation">
+                  <button className="secondary" disabled={partIndex === 0} onClick={() => setPart(story.id, partIndex - 1)}><ArrowLeft size={17}/> Previous</button>
+                  <span>{complete ? 'Finished' : `Part ${partIndex + 1} / ${story.parts.length}`}</span>
+                  <button className="primary" onClick={() => setPart(story.id, complete ? 0 : partIndex + 1)}>{complete ? 'Read again' : partIndex === story.parts.length - 1 ? 'Finish story' : 'Next part'} <ArrowRight size={17}/></button>
+                </div>
+              </div>
             </article>
 
             <aside className="side-panel">
               <div className="side-card">
+                <div className="eyebrow">STORY PARTS</div>
+                <div className="part-list">{story.parts.map((part, i) => <button key={i} className={i === partIndex ? 'part-link active' : 'part-link'} onClick={() => setPart(story.id, i)}><span>{String(i + 1).padStart(2, '0')}</span>{part.title}</button>)}<button className={complete ? 'part-link active' : 'part-link'} onClick={() => setPart(story.id, story.parts.length)}>Literary companion</button></div>
                 <div className="eyebrow">EXPERIENCE</div>
                 <button className="experience active"><BookOpen size={18}/> Read <span>Open</span></button>
-                <button className="experience" onClick={() => speak(story)}><Volume2 size={18}/> Listen <span>{playing ? 'Playing' : story.duration}</span></button>
+                <button className="experience" onClick={() => speak(story, partIndex)}><Volume2 size={18}/> Listen <span>{playing ? 'Playing' : story.duration}</span></button>
                 <button className="experience" onClick={() => alert('Illustrated video is a Phase 2 production asset.')}><Clapperboard size={18}/> Watch <span>Preview</span></button>
               </div>
               <div className="side-card">
                 <div className="eyebrow">EDITORIAL STATUS</div>
                 <p><strong>{story.type}</strong></p>
+                <p className="muted">Text access: {story.textAccess === 'original-demo' ? 'Original demonstration text' : story.textAccess}</p>
                 <p className="muted">The production catalogue will only publish works after source, rights and human literary review are recorded.</p>
               </div>
             </aside>
@@ -220,7 +244,7 @@ function App() {
                   <h3>{story.title}</h3>
                   <p>{story.summary}</p>
                   <div className="story-card__footer">
-                    <span>{story.duration}</span>
+                    <span>{progress[story.id] > 0 ? `Continue · ${Math.min(progress[story.id] + 1, story.parts.length)} / ${story.parts.length}` : `${story.parts.length} parts · ${story.duration}`}</span>
                     <button onClick={() => setSelected(story.id)}>Explore <ArrowRight size={17}/></button>
                   </div>
                 </div>
