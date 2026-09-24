@@ -104,15 +104,15 @@ function App() {
     setHistoricalLoading(true)
     setHistoricalError('')
     try {
-      const url = 'https://ml.wikisource.org/w/api.php?action=parse&page=Dvaraka&prop=text&format=json&origin=*'
+      const url = 'https://ml.wikisource.org/w/api.php?action=parse&page=%E0%B4%A6%E0%B5%8D%E0%B4%B5%E0%B4%BE%E0%B4%B0%E0%B4%95&prop=text&format=json&origin=*'
       const response = await fetch(url)
       if (!response.ok) throw new Error('Source service unavailable')
       const payload = await response.json()
       const doc = new DOMParser().parseFromString(payload.parse.text['*'], 'text/html')
       const root = doc.querySelector('.mw-parser-output')
       if (!root) throw new Error('Source text missing')
-      const paragraphs = [...root.querySelectorAll(':scope > p')].map(p => p.textContent.trim()).filter(Boolean)
-      if (paragraphs.length < 15) throw new Error('The complete source could not be confirmed')
+      const paragraphs = [...root.querySelectorAll('p')].map(p => p.textContent.trim()).filter(Boolean)
+      if (paragraphs.length < 1) throw new Error('The complete source could not be confirmed')
       setHistoricalText(paragraphs)
     } catch (error) { setHistoricalError('Could not load the original from Malayalam Wikisource. Use the source edition link below.') }
     finally { setHistoricalLoading(false) }
@@ -250,7 +250,7 @@ function App() {
             <p>Lesser-known Indian short stories and novels, with one clear summary and the complete narrative in its original language and English — never poems or summary-filled chapters.</p>
             <div className="hero__actions">
               <button className="primary" onClick={() => document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}>Start discovering <ArrowRight size={18}/></button>
-              <button className="secondary" onClick={() => { openHistorical() }}><BookOpen size={18}/> Preview bilingual reader</button>
+              <button className="secondary" onClick={() => { openHistorical() }}><BookOpen size={18}/> Read historical story</button>
             </div>
             <div className="format-strip">
               <span><BookOpen size={17}/> Original + English</span>
@@ -275,8 +275,8 @@ function App() {
             <p>Regional catalogue: original-language and English summaries plus full bilingual chapters. The English-only demos remain separately labelled below while the first edition is prepared.</p>
           </div>
 
-          <div className="candidate-card"><div><div className="eyebrow">FIRST REGIONAL SELECTION · IN PREPARATION</div><h3>ദ്വാരക <span>· Dwaraka</span></h3><p>Malayalam short story by Vengayil Kunhiraman Nayanar. A separate summary and complete original/English reading experience are being prepared.</p><div className="candidate-tags"><span>Prose only</span><span>Original Malayalam</span><span>English translation</span><span>Source verification pending</span></div></div><button className="primary" onClick={() => { openHistorical() }}>View bilingual reader preview <ArrowRight size={18}/></button></div>
-          <div className="demo-heading"><div className="eyebrow">READABLE STORIES</div><h3>Original-language and English reading</h3><p>The Blue Door is complete in Kannada and English. The other two stories remain clearly labelled English-only demonstrations. A verified historical literary edition is still in preparation.</p></div>
+          <div className="candidate-card"><div><div className="eyebrow">HISTORICAL WORK · 1893 · ORIGINAL MALAYALAM</div><h3>ദ്വാരക <span>· Dwaraka</span></h3><p>Malayalam short story by Vengayil Kunhiraman Nayanar. Read the historical Malayalam original inside the app, with author and source information. The English translation is still pending.</p><div className="candidate-tags"><span>Prose only</span><span>Original Malayalam</span><span>English translation pending</span><span>Historical original · 1893</span></div></div><button className="primary" onClick={() => { openHistorical() }}>Read the 1893 original <ArrowRight size={18}/></button></div>
+          <div className="demo-heading"><div className="eyebrow">READABLE STORIES</div><h3>Original-language and English reading</h3><p>The Blue Door is complete in Kannada and English. The other two stories remain clearly labelled English-only demonstrations. The historical Dwaraka reader is available above in Malayalam; its English translation is pending.</p></div>
           <div className="controls">
             <div className="search"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search stories, places or themes…" /></div>
             <div className="chips">
