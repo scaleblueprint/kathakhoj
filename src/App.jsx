@@ -96,6 +96,7 @@ function App() {
     const partIndex = Math.min(progress[story.id] || 0, story.parts.length)
     const complete = partIndex === story.parts.length
     const currentPart = story.parts[partIndex]
+    const sourceLinked = Boolean(story.sourceUrl)
     return (
       <div className="app">
         <header className="topbar">
@@ -116,9 +117,10 @@ function App() {
                 <span><Clapperboard size={16} /> Watch preview</span>
               </div>
               <div className="story-actions">
+                {sourceLinked && <a className="primary" href={story.sourceUrl} target="_blank" rel="noopener noreferrer">Read complete Malayalam original <ArrowRight size={18}/></a>}
                 <button className="primary" onClick={() => speak(story, partIndex)}>
                   {playing ? <Pause size={18}/> : <Play size={18}/>}
-                  {playing ? 'Stop narration' : 'Listen to this part'}
+                  {playing ? 'Stop narration' : sourceLinked ? 'Listen to reading guide' : 'Listen to this part'}
                 </button>
                 <button className="secondary" onClick={() => toggleSaved(story.id)}>
                   {isSaved ? <BookmarkCheck size={18}/> : <Bookmark size={18}/>}
@@ -131,11 +133,11 @@ function App() {
 
           <div className="story-layout">
             <article className="reader">
-              <div className="prototype-note"><Sparkles size={17}/><span><strong>Prototype note:</strong> {story.note}</span></div>
+              <div className="prototype-note"><Sparkles size={17}/><span><strong>{sourceLinked ? 'Original literature:' : 'Prototype note:'}</strong> {story.note}</span></div>
               <div id="reading-part" className="part-reader">
                 <div className="eyebrow">{complete ? 'STORY COMPLETE' : `PART ${partIndex + 1} OF ${story.parts.length}`}</div>
                 <div className="progress-track" role="progressbar" aria-valuenow={partIndex} aria-valuemin="0" aria-valuemax={story.parts.length} aria-label="Story progress"><span style={{ width: `${partIndex / story.parts.length * 100}%` }} /></div>
-                {complete ? <section className="essence"><h2>The literary companion</h2><p>{story.essence}</p><p className="muted">You have reached the end of this original demonstration story. The full literary catalogue will provide author, source edition, language, and rights information here.</p></section> : <>
+                {complete ? <section className="essence"><h2>The literary companion</h2><p>{story.essence}</p><p className="muted">You have reached the end of this original demonstration story. The original text remains available through the linked source edition.</p></section> : <>
                   <h2>{currentPart.title}</h2>
                   {currentPart.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
                 </>}
@@ -159,7 +161,8 @@ function App() {
               <div className="side-card">
                 <div className="eyebrow">EDITORIAL STATUS</div>
                 <p><strong>{story.type}</strong></p>
-                <p className="muted">Text access: {story.textAccess === 'original-demo' ? 'Original demonstration text' : story.textAccess}</p>
+                <p className="muted">Text access: {story.textAccess === 'original-demo' ? 'Original demonstration text' : 'Complete original available at source'}</p>
+                {sourceLinked && <p className="muted"><strong>Author:</strong> {story.author}<br/><strong>First published:</strong> {story.published}<br/><a href={story.sourceUrl} target="_blank" rel="noopener noreferrer">{story.sourceTitle} ↗</a></p>}
                 <p className="muted">The production catalogue will only publish works after source, rights and human literary review are recorded.</p>
               </div>
             </aside>
