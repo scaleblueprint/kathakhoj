@@ -13,10 +13,10 @@ export const stories = [
     summary: 'At the edge of a rain-soaked town, a small lantern becomes an unexpected invitation.',
     note: 'Prototype-only original fiction. Not an adaptation or translation of a published Kannada work.',
     parts: [
-      { title: 'The afternoon train', paragraphs: ['When the first monsoon rain reached the town, Meera kept the old lantern burning outside her tea shop. Nobody needed it anymore, her brother said. The bus stop had electric lights, and every traveller carried a phone.'] },
-      { title: 'The next station', paragraphs: ['One evening the power failed. Across the square, shops disappeared into rain. A young traveller, unable to read the local signs, followed the lantern to her doorway. Meera offered tea and drew a map on the back of a paper bag.'] },
-      { title: 'Fields beyond the window', paragraphs: ['By morning the electricity had returned. The traveller had gone, leaving a note thanking her for the light. Her brother repaired the lantern’s crooked handle without being asked.'] },
-      { title: 'What travelled on', paragraphs: ['Meera understood that the light was no longer only a memory. It had become a small way of making room for someone new.'] },
+      { title: 'The light outside', paragraphs: ['When the first monsoon rain reached the town, Meera kept the old lantern burning outside her tea shop. Nobody needed it anymore, her brother said. The bus stop had electric lights, and every traveller carried a phone.'] },
+      { title: 'The night the town went dark', paragraphs: ['One evening the power failed. Across the square, shops disappeared into rain. A young traveller, unable to read the local signs, followed the lantern to her doorway. Meera offered tea and drew a map on the back of a paper bag.'] },
+      { title: 'A visitor at the door', paragraphs: ['By morning the electricity had returned. The traveller had gone, leaving a note thanking her for the light. Her brother repaired the lantern’s crooked handle without being asked.'] },
+      { title: 'What the lantern meant', paragraphs: ['Meera understood that the light was no longer only a memory. It had become a small way of making room for someone new.'] },
     ],
     textAccess: 'original-demo',
     essence: 'Objects can carry memory, but their meaning changes when they become useful to someone else.'
