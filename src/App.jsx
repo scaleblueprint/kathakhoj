@@ -8,6 +8,12 @@ import { filters, stories } from './data/stories.js'
 const saveKey = 'kathakhoj:saved'
 const feedbackKey = 'kathakhoj:feedback'
 const progressKey = 'kathakhoj:progress'
+const historicalSelections = [
+  {id:'the-skeleton',title:'The Skeleton',author:'Rabindranath Tagore',edition:'Mashi and Other Stories (1918)',sourcePage:'Mashi and Other Stories/The Skeleton',language:'English translation of Bengali',description:'A historical literary story from a documented 1918 collection.'},
+  {id:'the-editor',title:'The Editor',author:'Rabindranath Tagore',edition:'Broken Ties and Other Stories (1925)',sourcePage:'Broken Ties and other Stories/The Editor',language:'English translation of Bengali',description:'An actual story in the 1925 published collection.'},
+  {id:'giribala',title:'Giribala',author:'Rabindranath Tagore',edition:'Broken Ties and Other Stories (1925)',sourcePage:'Broken Ties and other Stories/Giribala',language:'English translation of Bengali',description:'An actual story in the 1925 published collection.'}
+]
+
 
 function Visual({ story, hero = false }) {
   return (
@@ -38,6 +44,7 @@ function App() {
   const [historicalError, setHistoricalError] = useState('')
   const [historicalLoading, setHistoricalLoading] = useState(false)
   const [historicalPart, setHistoricalPart] = useState(0)
+  const [historicalSelection, setHistoricalSelection] = useState(null)
 
   const filtered = useMemo(() => stories.filter(s => {
     const matchesQuery = [s.title, s.subtitle, s.region, s.theme, typeof s.summary === 'string' ? s.summary : s.summary?.original, s.summary?.english]
@@ -97,28 +104,35 @@ function App() {
     alert('Thanks — your feedback is saved in this browser for the prototype.')
   }
 
-  const openHistorical = async () => {
+  const openHistorical = async (selection = null) => {
+    setHistoricalSelection(selection)
     setShowPreview(true)
     setReadingLanguage('original')
     setHistoricalPart(0)
+    setHistoricalText([])
     setHistoricalLoading(true)
     setHistoricalError('')
     try {
-      const url = 'https://ml.wikisource.org/w/api.php?action=parse&page=%E0%B4%A6%E0%B5%8D%E0%B4%B5%E0%B4%BE%E0%B4%B0%E0%B4%95&prop=text&format=json&origin=*'
+      const domain = selection ? 'en.wikisource.org' : 'ml.wikisource.org'
+      const title = selection?.sourcePage || 'ദ്വാരക'
+      const url = 'https://' + domain + '/w/api.php?action=parse&page=' + encodeURIComponent(title) + '&prop=text&format=json&origin=*'
       const response = await fetch(url)
       if (!response.ok) throw new Error('Source service unavailable')
       const payload = await response.json()
+      if (payload.error || !payload.parse?.text?.['*']) throw new Error('Source page unavailable')
       const doc = new DOMParser().parseFromString(payload.parse.text['*'], 'text/html')
       const root = doc.querySelector('.mw-parser-output')
       if (!root) throw new Error('Source text missing')
-      const paragraphs = [...root.querySelectorAll('p')].map(p => p.textContent.trim()).filter(Boolean)
-      if (paragraphs.length < 1) throw new Error('The complete source could not be confirmed')
+      root.querySelectorAll('style,script,nav,.mw-editsection,.reference,.reflist,.noprint,.ws-noexport,table').forEach(node => node.remove())
+      const paragraphs = [...root.querySelectorAll('p')].map(p => p.textContent.trim()).filter(p => p.length > 30)
+      if (paragraphs.length < 3) throw new Error('Source text could not be confirmed')
       setHistoricalText(paragraphs)
-    } catch (error) { setHistoricalError('Could not load the original from Malayalam Wikisource. Use the source edition link below.') }
+    } catch (error) { setHistoricalError('The complete text could not be loaded here. Open the verified source edition below. No invented substitute will be shown.') }
     finally { setHistoricalLoading(false) }
   }
 
-  if (showPreview) return <div className="app"><header className="topbar"><button className="brand brand--button" onClick={() => setShowPreview(false)}>Katha<span>Khoj</span></button><button className="ghost" onClick={() => setShowPreview(false)}><ArrowLeft size={18}/> Back to discover</button></header><main className="story-page"><section className="story-hero"><div><div className="eyebrow">HISTORICAL MALAYALAM SHORT STORY · 1893</div><h1>ദ്വാരക · Dwaraka</h1><p className="story-subtitle">Vengayil Kunhiraman Nayanar</p><p>Authentic historical fiction. The original Malayalam text is loaded from its Wikisource edition; the English translation is not yet available.</p><a href="https://ml.wikisource.org/wiki/Dvaraka" target="_blank" rel="noopener noreferrer">View original source edition ↗</a></div><div className="visual visual--green visual--hero"><div className="visual__glyph">അ</div><div className="visual__region">Malayalam literature</div><div className="visual__caption">ORIGINAL WORK · 1893</div></div></section><div className="story-layout"><article className="reader"><section className="summary-panel"><div className="eyebrow">ABOUT THIS WORK</div><h2>ദ്വാരക</h2><p><strong>Author:</strong> Vengayil Kunhiraman Nayanar · <strong>Published:</strong> 1893 · <strong>Original language:</strong> Malayalam</p><p><strong>Source edition:</strong> Malayalam Wikisource · <strong>English translator:</strong> Not yet assigned</p><div className="eyebrow">SUMMARY · SEPARATE FROM THE STORY</div><p>An engineer working on an undersea telegraph cable imagines an extraordinary encounter with the legendary city of Dwaraka. The story blends technology, mythology and the narrator's imagination.</p></section><div className="part-reader"><div className="eyebrow">ACTUAL ORIGINAL · READING SECTIONS</div><div className="language-switch"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => setReadingLanguage('original')}>മലയാളം · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => setReadingLanguage('english')}>English translation · Pending</button></div>{readingLanguage === 'english' ? <p className="muted">A complete English translation has not yet been prepared. The original Malayalam text remains available; no summary is being passed off as a translation.</p> : historicalLoading ? <p>Loading the historical original…</p> : historicalError ? <p role="alert">{historicalError}</p> : <><h2>Reading section {historicalPart + 1} of {Math.ceil(historicalText.length / 5)}</h2>{historicalText.slice(historicalPart * 5, historicalPart * 5 + 5).map((p,i) => <p lang="ml" key={i}>{p}</p>)}<div className="part-navigation"><button className="secondary" disabled={historicalPart === 0} onClick={() => setHistoricalPart(historicalPart - 1)}>Previous</button><button className="primary" disabled={(historicalPart + 1) * 5 >= historicalText.length} onClick={() => setHistoricalPart(historicalPart + 1)}>Next section <ArrowRight size={17}/></button></div></>}</div></article><aside className="side-panel"><div className="side-card"><div className="eyebrow">SOURCE & EDITION</div><p>Original author: Vengayil Kunhiraman Nayanar</p><p>First publication: 1893</p><p>Original text: Malayalam Wikisource</p><p>English translation: Not yet published in KathaKhoj</p><p className="muted">Reading sections divide the existing prose for navigation; they are not newly invented chapters.</p></div></aside></div></main></div>
+
+  if (showPreview) return <div className="app"><header className="topbar"><button className="brand brand--button" onClick={() => setShowPreview(false)}>Katha<span>Khoj</span></button><button className="ghost" onClick={() => setShowPreview(false)}><ArrowLeft size={18}/> Back to discover</button></header><main className="story-page"><section className="story-hero"><div><div className="eyebrow">{historicalSelection ? historicalSelection.edition : 'HISTORICAL MALAYALAM SHORT STORY · 1893'}</div><h1>{historicalSelection ? historicalSelection.title : 'ദ್ವാരക · Dwaraka'}</h1><p className="story-subtitle">{historicalSelection ? historicalSelection.author : 'Vengayil Kunhiraman Nayanar'}</p><p>{historicalSelection ? 'Authentic published English translation loaded from Wikisource. The original Bengali text has not yet been aligned in this edition.' : 'Authentic historical fiction. The original Malayalam text is loaded from its Wikisource edition; the English translation is not yet available.'}</p><a href={historicalSelection ? "https://en.wikisource.org/wiki/" + encodeURIComponent(historicalSelection.sourcePage).replaceAll("%2F","/") : "https://ml.wikisource.org/wiki/ദ്വാരക"} target="_blank" rel="noopener noreferrer">View original source edition ↗</a></div><div className="visual visual--green visual--hero"><div className="visual__glyph">അ</div><div className="visual__region">Malayalam literature</div><div className="visual__caption">{historicalSelection ? 'PUBLISHED HISTORICAL TRANSLATION' : 'ORIGINAL WORK · 1893'}</div></div></section><div className="story-layout"><article className="reader"><section className="summary-panel"><div className="eyebrow">ABOUT THIS WORK</div><h2>ദ്വാരക</h2><p><strong>Author:</strong> {historicalSelection ? historicalSelection.author : 'Vengayil Kunhiraman Nayanar'} · <strong>Edition:</strong> {historicalSelection ? historicalSelection.edition : '1893'} · <strong>Text displayed:</strong> {historicalSelection ? historicalSelection.language : 'Malayalam original'}</p><p><strong>Source edition:</strong> {historicalSelection ? 'English Wikisource · historical published translation' : 'Malayalam Wikisource · English translation pending'}</p><div className="eyebrow">SUMMARY · SEPARATE FROM THE STORY</div><p>{historicalSelection ? historicalSelection.description : 'A story connecting a telegraph engineer’s imagination with the legendary city of Dwaraka.'}</p></section><div className="part-reader"><div className="eyebrow">{historicalSelection ? 'ACTUAL PUBLISHED TRANSLATION · READING SECTIONS' : 'ACTUAL ORIGINAL · READING SECTIONS'}</div><div className="eyebrow">{historicalSelection ? 'English · published translation (original Bengali pending)' : 'മലയാളം · original (English translation pending)'}</div>{historicalLoading ? <p>Loading the historical original…</p> : historicalError ? <p role="alert">{historicalError}</p> : <><h2>Reading section {historicalPart + 1} of {Math.ceil(historicalText.length / 5)}</h2>{historicalText.slice(historicalPart * 5, historicalPart * 5 + 5).map((p,i) => <p lang={historicalSelection ? "en" : "ml"} key={i}>{p}</p>)}<div className="part-navigation"><button className="secondary" disabled={historicalPart === 0} onClick={() => setHistoricalPart(historicalPart - 1)}>Previous</button><button className="primary" disabled={(historicalPart + 1) * 5 >= historicalText.length} onClick={() => setHistoricalPart(historicalPart + 1)}>Next section <ArrowRight size={17}/></button></div></>}</div></article><aside className="side-panel"><div className="side-card"><div className="eyebrow">SOURCE & EDITION</div><p>Original author: {historicalSelection ? historicalSelection.author : 'Vengayil Kunhiraman Nayanar'}</p><p>Source edition: {historicalSelection ? historicalSelection.edition : '1893'}</p><p>Text source: {historicalSelection ? 'English Wikisource' : 'Malayalam Wikisource'}</p><p>{historicalSelection ? 'Original Bengali text: pending alignment' : 'English translation: pending'}</p><p className="muted">Reading sections divide the existing prose for navigation; they are not newly invented chapters.</p></div></aside></div></main></div>
 
   if (selected) {
     const story = stories.find(s => s.id === selected)
@@ -276,6 +290,7 @@ function App() {
           </div>
 
           <div className="candidate-card"><div><div className="eyebrow">HISTORICAL WORK · 1893 · ORIGINAL MALAYALAM</div><h3>ദ്വാരക <span>· Dwaraka</span></h3><p>Malayalam short story by Vengayil Kunhiraman Nayanar. Read the historical Malayalam original inside the app, with author and source information. The English translation is still pending.</p><div className="candidate-tags"><span>Prose only</span><span>Original Malayalam</span><span>English translation pending</span><span>Historical original · 1893</span></div></div><button className="primary" onClick={() => { openHistorical() }}>Read the 1893 original <ArrowRight size={18}/></button></div>
+          <div className="demo-heading"><div className="eyebrow">MORE REAL HISTORICAL STORIES</div><h3>Published prose, not prototype fiction</h3><p>These are documented English translations of Bengali originals. Open a story to read the source text in-app; original-language alignment is still pending.</p></div><div className="story-grid">{historicalSelections.map(item => <article className="story-card" key={item.id}><div className="story-card__body"><div className="eyebrow">HISTORICAL PROSE · {item.edition}</div><h3>{item.title}</h3><p>{item.author} · {item.language}</p><p>{item.description}</p><div className="story-card__footer"><span>Verified published edition</span><button onClick={() => openHistorical(item)}>Read historical text <ArrowRight size={17}/></button></div></div></article>)}</div>
           <div className="demo-heading"><div className="eyebrow">READABLE STORIES</div><h3>Original-language and English reading</h3><p>The Blue Door is complete in Kannada and English. The other two stories remain clearly labelled English-only demonstrations. The historical Dwaraka reader is available above in Malayalam; its English translation is pending.</p></div>
           <div className="controls">
             <div className="search"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search stories, places or themes…" /></div>
