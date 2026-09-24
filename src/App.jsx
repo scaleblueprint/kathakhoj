@@ -71,9 +71,10 @@ function App() {
       setPlaying(false)
       return
     }
-    const utterance = new SpeechSynthesisUtterance(
-      [story.title, story.parts[partIndex]?.title || 'Literary companion', ...(story.parts[partIndex]?.paragraphs || [story.essence])].join('. ')
-    )
+    const part = story.parts[partIndex]
+    const lines = part ? (readingLanguage === 'original' ? part.original : part.english) : [story.essence]
+    const utterance = new SpeechSynthesisUtterance([story.title, part?.title || 'Literary companion', ...lines].join(' '))
+    utterance.lang = readingLanguage === 'original' ? story.originalLocale : 'en-IN'
     utterance.rate = 0.93
     utterance.pitch = 0.92
     utterance.onend = () => setPlaying(false)
@@ -93,6 +94,7 @@ function App() {
 
   if (selected) {
     const story = stories.find(s => s.id === selected)
+    if (!story) return null
     const isSaved = saved.includes(story.id)
     const partIndex = Math.min(progress[story.id] || 0, story.parts.length)
     const complete = partIndex === story.parts.length
@@ -118,10 +120,10 @@ function App() {
                 <span><Clapperboard size={16} /> Watch preview</span>
               </div>
               <div className="story-actions">
-                {sourceLinked && <a className="primary" href={story.sourceUrl} target="_blank" rel="noopener noreferrer">Read complete Malayalam original <ArrowRight size={18}/></a>}
+                {sourceLinked && <a className="primary" href={story.sourceUrl} target="_blank" rel="noopener noreferrer">View source edition <ArrowRight size={18}/></a>}
                 <button className="primary" onClick={() => speak(story, partIndex)}>
                   {playing ? <Pause size={18}/> : <Play size={18}/>}
-                  {playing ? 'Stop narration' : sourceLinked ? 'Listen to reading guide' : 'Listen to this part'}
+                  {playing ? 'Stop narration' : 'Listen to this part'}
                 </button>
                 <button className="secondary" onClick={() => toggleSaved(story.id)}>
                   {isSaved ? <BookmarkCheck size={18}/> : <Bookmark size={18}/>}
@@ -134,15 +136,15 @@ function App() {
 
           <div className="story-layout">
             <article className="reader">
-              <div className="prototype-note"><Sparkles size={17}/><span><strong>{sourceLinked ? 'Original literature:' : 'Prototype note:'}</strong> {story.note}</span></div>
+              <div className="prototype-note"><Sparkles size={17}/><span><strong>Editorial provenance:</strong> {story.note}</span></div>
               <section className="summary-panel"><div className="eyebrow">STORY SUMMARY</div><h2>The story at a glance</h2><p>{story.summary}</p><p>{story.essence}</p></section>
               <div id="reading-part" className="part-reader">
                 <div className="eyebrow">{complete ? 'STORY COMPLETE' : `PART ${partIndex + 1} OF ${story.parts.length}`}</div>
-                {sourceLinked && <div className="language-switch" role="group" aria-label="Reading language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => setReadingLanguage('original')}>മലയാളം · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => setReadingLanguage('english')}>English translation</button></div>}
+                <div className="language-switch" role="group" aria-label="Reading language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('original') }}>{story.originalLanguage} · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('english') }}>English translation</button></div>
                 <div className="progress-track" role="progressbar" aria-valuenow={partIndex} aria-valuemin="0" aria-valuemax={story.parts.length} aria-label="Story progress"><span style={{ width: `${partIndex / story.parts.length * 100}%` }} /></div>
                 {complete ? <section className="essence"><h2>The literary companion</h2><p>{story.essence}</p><p className="muted">You have reached the end of the reading trail. For this selection, the complete original remains available through the linked source edition.</p></section> : <>
                   <h2>{currentPart.title}</h2>
-                  {sourceLinked ? <div className="source-reading"><p>{readingLanguage === 'original' ? 'The original Malayalam text is available in full at the source edition. The chapter divisions here are a reading guide; they do not replace the poem.' : 'A complete, reviewed English translation is being prepared. This reading guide is not a translation and will not be presented as one.'}</p><a className="secondary" href={story.sourceUrl} target="_blank" rel="noopener noreferrer">{readingLanguage === 'original' ? 'Open complete original text' : 'View Malayalam source'} <ArrowRight size={17}/></a><p className="muted">{currentPart.paragraphs[0]}</p></div> : currentPart.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+                  {(readingLanguage === 'original' ? currentPart.original : currentPart.english).map((p, i) => <p key={i} lang={readingLanguage === 'original' ? story.originalLocale : 'en'}>{p}</p>)}
                 </>}
                 <div className="part-navigation">
                   <button className="secondary" disabled={partIndex === 0} onClick={() => setPart(story.id, partIndex - 1)}><ArrowLeft size={17}/> Previous</button>
@@ -164,8 +166,8 @@ function App() {
               <div className="side-card">
                 <div className="eyebrow">EDITORIAL STATUS</div>
                 <p><strong>{story.type}</strong></p>
-                <p className="muted">Text access: {story.textAccess === 'original-demo' ? 'Original demonstration text' : 'Complete original available at source'}</p>
-                {sourceLinked && <p className="muted"><strong>Author:</strong> {story.author}<br/><strong>First published:</strong> {story.published}<br/><a href={story.sourceUrl} target="_blank" rel="noopener noreferrer">{story.sourceTitle} ↗</a></p>}
+                <p className="muted">Complete original and complete English translation, aligned by reading part.</p>
+                {sourceLinked && <p className="muted"><strong>Author:</strong> {story.author}<br/><strong>First published:</strong> {story.published}<br/><strong>Translation:</strong> {story.translator}<br/><a href={story.sourceUrl} target="_blank" rel="noopener noreferrer">{story.sourceTitle} ↗</a></p>}
                 <p className="muted">The production catalogue will only publish works after source, rights and human literary review are recorded.</p>
               </div>
             </aside>
@@ -206,7 +208,7 @@ function App() {
             <p>Discover remarkable literary worlds from across India — thoughtfully introduced, easy to enter, and designed to make you want to explore the original work.</p>
             <div className="hero__actions">
               <button className="primary" onClick={() => document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}>Start discovering <ArrowRight size={18}/></button>
-              <button className="secondary" onClick={() => setSelected(stories[0].id)}><Headphones size={18}/> Try a story</button>
+              <button className="secondary" onClick={() => stories[0] && setSelected(stories[0].id)} disabled={!stories.length}><Headphones size={18}/> Try a story</button>
             </div>
             <div className="format-strip">
               <span><BookOpen size={17}/> Read</span>
@@ -214,7 +216,7 @@ function App() {
               <span><Clapperboard size={17}/> Watch</span>
             </div>
           </div>
-          <Visual story={stories[0]} hero />
+          {stories[0] ? <Visual story={stories[0]} hero /> : <div className="visual visual--green visual--hero"><div className="visual__glyph">✦</div><div className="visual__region">Stories worth rediscovering</div><div className="visual__caption">COMPLETE ORIGINAL · COMPLETE ENGLISH TRANSLATION</div></div>}
         </section>
 
         <section className="manifesto" id="why">
@@ -228,7 +230,7 @@ function App() {
               <div className="eyebrow">BEGIN YOUR JOURNEY</div>
               <h2>Discover a story</h2>
             </div>
-            <p>These first pieces are original editorial demonstrations. The real catalogue will be source-backed and rights-cleared.</p>
+            <p>Only complete, source-verified stories and novels with a full English translation will be published.</p>
           </div>
 
           <div className="controls">
@@ -257,7 +259,7 @@ function App() {
               </article>
             ))}
           </div>
-          {!filtered.length && <div className="empty">No stories match yet. Try another theme.</div>}
+          {!filtered.length && <div className="empty"><h3>{stories.length ? 'No stories match yet.' : 'The first complete bilingual story is being prepared.'}</h3><p>{stories.length ? 'Try another theme.' : 'We are replacing the earlier poem and demonstration pieces with lesser-known, source-verified stories and novels. A work will appear here only when its complete original text and complete English translation are ready for in-app reading.'}</p></div>}
         </section>
 
         <section className="trail">
