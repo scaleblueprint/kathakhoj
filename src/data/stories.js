@@ -1,5 +1,31 @@
 export const stories = [
   {
+    id: 'veena-poovu',
+    title: 'വീണ പൂവ് · Veena Poovu',
+    subtitle: 'A fallen flower, a life remembered',
+    region: 'Kerala',
+    language: 'Malayalam',
+    inspiredLanguage: 'Malayalam original',
+    theme: 'Place & family',
+    duration: 'Original poem · 41 stanzas',
+    type: 'Source-linked original literature',
+    accent: 'green',
+    summary: 'Discover Kumaran Asan’s 1907 Malayalam poem through a guided reading trail and the complete original at Wikisource.',
+    note: 'Original poem by Kumaran Asan (1907). This guided page contains original editorial orientation, not a translation or reproduction of the poem. Read all 41 stanzas at the linked Wikisource edition.',
+    author: 'Kumaran Asan',
+    published: '1907',
+    sourceTitle: 'Malayalam Wikisource — വീണ പൂവ്',
+    sourceUrl: 'https://ml.wikisource.org/wiki/Veena_Poovu',
+    textAccess: 'source-linked-public-domain-original',
+    parts: [
+      { title: 'Meet the fallen flower', paragraphs: ['Begin with the poem’s opening image. Follow the source link to read the original Malayalam stanzas 1–10. Notice how the poet speaks directly to the flower and recalls its early life. This is an editorial reading prompt, not the poem itself.'] },
+      { title: 'Beauty and attachment', paragraphs: ['Continue with original stanzas 11–20 at Wikisource. Observe the imagery of affection and the shifting emotional register. Read the Malayalam before consulting any interpretation.'] },
+      { title: 'The fall and its echoes', paragraphs: ['Read original stanzas 21–30 at Wikisource. Consider how the poem moves from one flower toward a wider reflection on impermanence.'] },
+      { title: 'The closing reflection', paragraphs: ['Finish original stanzas 31–41 at Wikisource. Return here only after reading the ending; the companion below offers one possible way to reflect on the whole poem.'] }
+    ],
+    essence: 'The fallen flower becomes a way to reflect on beauty, change and impermanence. This is an editorial interpretation, not a replacement for Asan’s Malayalam text.'
+  },
+  {
     id: 'last-lantern',
     title: 'The Last Lantern',
     subtitle: 'A light kept alive for reasons no one quite understood',
