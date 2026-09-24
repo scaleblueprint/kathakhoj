@@ -1,61 +1,33 @@
-# KathaKhoj V1
+# KathaKhoj — prose-first bilingual literary discovery
 
-KathaKhoj is a mobile-first literary discovery prototype for exploring lesser-known Indian literary worlds through **Read, Listen and Watch** pathways.
+KathaKhoj is a mobile-first discovery and reading experience for **lesser-known Indian short stories, novellas and novels**. Poems and popular canonical selections are out of scope for this pilot.
 
-## What V1 includes
+## Reading experience
 
-- Cinematic discovery homepage
-- Story search and theme/region filters
-- Three original editorial demo stories
-- Immersive story reader
-- Browser-based sample narration
-- Watch-path placeholder for future illustrated storytelling
-- Local saved stories
-- Local prototype feedback capture
-- Literary Trail concept
-- Responsive mobile layout
-- Render deployment configuration
+- One uninterrupted editorial summary, separate from the original work.
+- Full original-language narrative divided at natural reading breaks.
+- Full English translation aligned to those same breaks.
+- Language switch, previous/next, reading progress saved in the browser.
+- Author, source edition, translator and rights/provenance recorded.
 
-## Important editorial note
+## Publication gate
 
-The three stories in V1 are **original editorial demonstration pieces** created only to test the product experience. They are not adaptations, translations, or claimed transcriptions of Kannada, Malayalam, or oral literary works.
+The public catalogue is intentionally empty while the first qualifying literary work is sourced and translated. Previous poem and original-fiction demonstration entries have been removed. **Do not insert summaries, excerpts, prompts or invented prose into a full-text chapter.**
 
-Before real literature is published, the production catalogue should record:
+Every published entry must be a source-verified prose work with complete original text, complete reviewed English translation, and documented permission/public-domain basis for each. Translation copyright may differ from the original work's copyright. Prioritize overlooked works, rather than treating public-domain status as evidence of obscurity.
 
-1. Original source and edition
-2. Author / rights holder
-3. Public-domain or licensing status
-4. Translation/adaptation permission where needed
-5. Human literary review
-6. Language and pronunciation review
-7. Media provenance and captions
-
-## Run locally
+## Local run
 
 ```bash
 npm install
 npm run dev
-```
-
-## Production build
-
-```bash
 npm run build
 ```
 
-## Deploy on Render
+## Render
 
-Use **Static Site**:
+Static Site; build command `npm install && npm run build`, publish directory `dist`. The repository includes `render.yaml`.
 
-- Build command: `npm install && npm run build`
-- Publish directory: `dist`
+## Editorial next step
 
-A `render.yaml` is included if you prefer Render Blueprint deployment.
-
-## V2 priorities
-
-- Replace sample stories with source-backed, rights-cleared Kannada and Malayalam works
-- Add real audio assets and illustrated video
-- Add CMS-backed editorial workflow
-- Add analytics for completion, repeat exploration and source-link clicks
-- Add original-language content and cross-language trails
+Identify one lesser-known Kannada or Malayalam short story with an accessible reliable full-text edition. Verify the author's death date and source rights; prepare a complete English translation with attribution and review; divide both texts at the same narrative breaks; then populate `src/data/stories.js`.
