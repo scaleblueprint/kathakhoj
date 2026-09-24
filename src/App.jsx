@@ -72,7 +72,7 @@ function App() {
       return
     }
     const part = story.parts[partIndex]
-    const lines = part ? (readingLanguage === 'original' ? part.original : part.english) : [story.essence]
+    const lines = part ? (readingLanguage === 'original' || !story.parts[0].english.length ? part.original : part.english) : [story.essence]
     const utterance = new SpeechSynthesisUtterance([story.title, part?.title || 'Literary companion', ...lines].join(' '))
     utterance.lang = readingLanguage === 'original' ? story.originalLocale : 'en-IN'
     utterance.rate = 0.93
@@ -140,11 +140,11 @@ function App() {
               <section className="summary-panel"><div className="eyebrow">STORY SUMMARY</div><h2>The story at a glance</h2><p>{story.summary}</p><p>{story.essence}</p></section>
               <div id="reading-part" className="part-reader">
                 <div className="eyebrow">{complete ? 'STORY COMPLETE' : `PART ${partIndex + 1} OF ${story.parts.length}`}</div>
-                <div className="language-switch" role="group" aria-label="Reading language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('original') }}>{story.originalLanguage} · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('english') }}>English translation</button></div>
+                {story.parts[0].english.length > 0 && <div className="language-switch" role="group" aria-label="Reading language"><button className={readingLanguage === 'original' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('original') }}>{story.originalLanguage} · Original</button><button className={readingLanguage === 'english' ? 'active' : ''} onClick={() => { window.speechSynthesis?.cancel(); setPlaying(false); setReadingLanguage('english') }}>English translation</button></div>}
                 <div className="progress-track" role="progressbar" aria-valuenow={partIndex} aria-valuemin="0" aria-valuemax={story.parts.length} aria-label="Story progress"><span style={{ width: `${partIndex / story.parts.length * 100}%` }} /></div>
                 {complete ? <section className="essence"><h2>The literary companion</h2><p>{story.essence}</p><p className="muted">You have reached the end of the reading trail. For this selection, the complete original remains available through the linked source edition.</p></section> : <>
                   <h2>{currentPart.title}</h2>
-                  {(readingLanguage === 'original' ? currentPart.original : currentPart.english).map((p, i) => <p key={i} lang={readingLanguage === 'original' ? story.originalLocale : 'en'}>{p}</p>)}
+                  {(readingLanguage === 'original' || !currentPart.english.length ? currentPart.original : currentPart.english).map((p, i) => <p key={i} lang={readingLanguage === 'original' ? story.originalLocale : 'en'}>{p}</p>)}
                 </>}
                 <div className="part-navigation">
                   <button className="secondary" disabled={partIndex === 0} onClick={() => setPart(story.id, partIndex - 1)}><ArrowLeft size={17}/> Previous</button>
@@ -166,7 +166,7 @@ function App() {
               <div className="side-card">
                 <div className="eyebrow">EDITORIAL STATUS</div>
                 <p><strong>{story.type}</strong></p>
-                <p className="muted">Complete original and complete English translation, aligned by reading part.</p>
+                <p className="muted">{story.parts[0].english.length ? 'Complete original and complete English translation, aligned by reading part.' : 'Complete original English demonstration story. Not a regional-language translation.'}</p>
                 {sourceLinked && <p className="muted"><strong>Author:</strong> {story.author}<br/><strong>First published:</strong> {story.published}<br/><strong>Translation:</strong> {story.translator}<br/><a href={story.sourceUrl} target="_blank" rel="noopener noreferrer">{story.sourceTitle} ↗</a></p>}
                 <p className="muted">The production catalogue will only publish works after source, rights and human literary review are recorded.</p>
               </div>
@@ -230,7 +230,7 @@ function App() {
               <div className="eyebrow">BEGIN YOUR JOURNEY</div>
               <h2>Discover a story</h2>
             </div>
-            <p>Only complete, source-verified stories and novels with a full English translation will be published.</p>
+            <p>Read original English demonstration stories while source-verified bilingual literary editions are prepared.</p>
           </div>
 
           <div className="controls">
@@ -259,7 +259,7 @@ function App() {
               </article>
             ))}
           </div>
-          {!filtered.length && <div className="empty"><h3>{stories.length ? 'No stories match yet.' : 'The first complete bilingual story is being prepared.'}</h3><p>{stories.length ? 'Try another theme.' : 'We are replacing the earlier poem and demonstration pieces with lesser-known, source-verified stories and novels. A work will appear here only when its complete original text and complete English translation are ready for in-app reading.'}</p></div>}
+          {!filtered.length && <div className="empty"><h3>{stories.length ? 'No stories match yet.' : 'More stories are being prepared.'}</h3><p>{stories.length ? 'Try another theme.' : 'Try another search. Verified regional works will be added when both full texts are ready.'}</p></div>}
         </section>
 
         <section className="trail">
