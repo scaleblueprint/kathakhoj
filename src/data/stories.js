@@ -75,6 +75,9 @@ const bilingualStories = [{
   theme:'Memory & belonging', duration:'4 chapters · complete short story',
   type:'Newly written bilingual short story', accent:'green',
   author:'KathaKhoj editorial fiction', translator:'KathaKhoj English rendering',
+  published:'2026 (first KathaKhoj app edition)', originalTitle:'ನೀಲಿ ಬಾಗಿಲು', englishTitle:'The Blue Door',
+  publicationStatus:'Newly written for KathaKhoj; not a previously published literary work',
+  sourceTitle:'Original KathaKhoj editorial manuscript', edition:'KathaKhoj digital edition, 2026',
   note:'Newly written Kannada-and-English fiction for KathaKhoj. Not attributed to a historical author or presented as a published classic.',
   rights:{original:'original-editorial',english:'original-editorial'},
   summary:{
