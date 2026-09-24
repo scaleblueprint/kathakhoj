@@ -281,18 +281,18 @@ function App() {
           <div className="hero__copy">
             <div className="eyebrow"><Sparkles size={15}/> REDISCOVER INDIA THROUGH ITS STORIES</div>
             <h1>Stories beyond<br/><em>the familiar.</em></h1>
-            <p>Lesser-known Indian short stories and novels, with one clear summary and the complete narrative in its original language and English — never poems or summary-filled chapters.</p>
+            <p>Discover lesser-known Indian prose through concise introductions, author context and source-backed reading. Original-language texts and English translations are added as verified.</p>
             <div className="hero__actions">
               <button className="primary" onClick={() => document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}>Start discovering <ArrowRight size={18}/></button>
               <button className="secondary" onClick={() => { openHistorical() }}><BookOpen size={18}/> Read historical story</button>
             </div>
             <div className="format-strip">
-              <span><BookOpen size={17}/> Original + English</span>
+              <span><BookOpen size={17}/> Regional literature</span>
               <span><Headphones size={17}/> Listen</span>
               <span><Clapperboard size={17}/> Watch</span>
             </div>
           </div>
-          {stories[0] ? <Visual story={stories[0]} hero /> : <div className="visual visual--green visual--hero"><div className="visual__glyph">✦</div><div className="visual__region">Stories worth rediscovering</div><div className="visual__caption">COMPLETE ORIGINAL · COMPLETE ENGLISH TRANSLATION</div></div>}
+          <div className="visual visual--green visual--hero"><div className="visual__glyph">✦</div><div className="visual__region">Stories across India</div><div className="visual__caption">DISCOVER · EXPLORE · READ</div></div>
         </section>
 
         <section className="manifesto" id="why">
