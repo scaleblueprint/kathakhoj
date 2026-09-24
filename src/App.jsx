@@ -9,7 +9,7 @@ const saveKey = 'kathakhoj:saved'
 const feedbackKey = 'kathakhoj:feedback'
 const progressKey = 'kathakhoj:progress'
 const historicalSelections = [
-  {id:'the-skeleton',title:'The Skeleton',author:'Rabindranath Tagore',edition:'Mashi and Other Stories (1918)',sourcePage:'Mashi and Other Stories/The Skeleton',language:'English translation of Bengali',description:'A historical literary story from a documented 1918 collection.'},
+  {id:'the-castaway',title:'The Castaway',author:'Rabindranath Tagore',edition:'Stories from Tagore (1918)',sourcePage:'Stories from Tagore/The Castaway',language:'English translation of Bengali',description:'A historical literary story from a documented 1918 collection.'},
   {id:'the-editor',title:'The Editor',author:'Rabindranath Tagore',edition:'Broken Ties and Other Stories (1925)',sourcePage:'Broken Ties and other Stories/The Editor',language:'English translation of Bengali',description:'An actual story in the 1925 published collection.'},
   {id:'giribala',title:'Giribala',author:'Rabindranath Tagore',edition:'Broken Ties and Other Stories (1925)',sourcePage:'Broken Ties and other Stories/Giribala',language:'English translation of Bengali',description:'An actual story in the 1925 published collection.'}
 ]
