@@ -103,6 +103,7 @@ function App() {
     const complete = partIndex === story.parts.length
     const currentPart = story.parts[partIndex]
     const sourceLinked = Boolean(story.sourceUrl)
+    const isDemo = story.originalLanguage === 'English'
     return (
       <div className="app">
         <header className="topbar">
@@ -167,11 +168,24 @@ function App() {
                 <button className="experience" onClick={() => alert('Illustrated video is a Phase 2 production asset.')}><Clapperboard size={18}/> Watch <span>Preview</span></button>
               </div>
               <div className="side-card">
+                <div className="eyebrow">ABOUT THIS WORK</div>
+                <h3>{story.originalTitle || story.title}</h3>
+                <p><strong>Author / creator:</strong> {story.author || 'Not recorded'}</p>
+                <p><strong>Original language:</strong> {story.originalLanguage}</p>
+                <p><strong>First publication:</strong> {story.published || 'Not established'}</p>
+                <p><strong>Edition:</strong> {story.edition || (isDemo ? 'KathaKhoj demonstration edition' : 'Not recorded')}</p>
+                <p><strong>English translation:</strong> {isDemo ? 'Not applicable — originally written in English' : (story.translator || 'Not recorded')}</p>
+                <p><strong>Source:</strong> {story.sourceTitle || (isDemo ? 'Original demonstration fiction' : 'Not recorded')}</p>
+                {story.sourceUrl && <p><a href={story.sourceUrl} target="_blank" rel="noopener noreferrer">View source edition ↗</a></p>}
+                <p><strong>Rights / status:</strong> {story.publicationStatus || (isDemo ? 'Newly written English-only demo' : 'See editorial note')}</p>
+                <p className="muted">{story.note}</p>
+              </div>
+              <div className="side-card">
                 <div className="eyebrow">EDITORIAL STATUS</div>
                 <p><strong>{story.type}</strong></p>
                 <p className="muted">{story.originalLanguage === 'English' ? 'Original English demonstration fiction. No Kannada or Malayalam translation is claimed.' : 'Complete original-language narrative and English translation, aligned chapter by chapter.'}</p>
                 {sourceLinked && <p className="muted"><strong>Author:</strong> {story.author}<br/><strong>First published:</strong> {story.published}<br/><strong>Translation:</strong> {story.translator}<br/><a href={story.sourceUrl} target="_blank" rel="noopener noreferrer">{story.sourceTitle} ↗</a></p>}
-                <p className="muted">The production catalogue will only publish works after source, rights and human literary review are recorded.</p>
+                <p className="muted">Historical literary editions require verified source, rights and translation credits before publication.</p>
               </div>
             </aside>
           </div>
