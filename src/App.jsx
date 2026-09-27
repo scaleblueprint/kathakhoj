@@ -278,17 +278,18 @@ function App() {
           <button onClick={() => document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}>Discover</button>
           <button onClick={() => document.getElementById('why')?.scrollIntoView({behavior:'smooth'})}>Why KathaKhoj</button>
           <button onClick={() => document.getElementById('feedback')?.scrollIntoView({behavior:'smooth'})}>Feedback</button>
+          <button onClick={() => {setCreatorPage(true);setMenu(false);window.scrollTo(0,0)}}>Story Lab</button>
         </nav>
         <button className="menu" onClick={() => setMenu(!menu)}>{menu ? <X/> : <Menu/>}</button>
       </header>
 
       <main>
-        <div style={{padding:'12px 28px',display:'flex',justifyContent:'flex-end'}}><button className="secondary" onClick={() => {setCreatorPage(true); window.scrollTo(0,0)}}><Sparkles size={17}/> Creator Studio · New story series</button></div>
+        
         <section className="hero">
           <div className="hero__copy">
-            <div className="eyebrow"><Sparkles size={15}/> REDISCOVER INDIA THROUGH ITS STORIES</div>
-            <h1>Some stories take you places.<br/><em>Others bring you home.</em></h1>
-            <p>Discover lesser-known Indian prose through concise introductions, author context and source-backed reading. Original-language texts and English translations are added as verified.</p>
+            <div className="eyebrow"><Sparkles size={15}/> ISSUE 001 · THE STORY UNIVERSE</div>
+            <h1>Every street<br/>has a <em>story.</em></h1>
+            <p>Unexpected characters. Familiar places. Extraordinary tales. Explore Indian literature through source-backed stories and new perspectives.</p>
             <div className="hero__actions">
               <button className="primary" onClick={() => document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}>Start discovering <ArrowRight size={18}/></button>
               <button className="secondary" onClick={() => { openHistorical() }}><BookOpen size={18}/> Read historical story</button>
@@ -299,7 +300,7 @@ function App() {
               <span><Clapperboard size={17}/> Watch</span>
             </div>
           </div>
-          <div className="visual visual--hero visual--journey"><img className="visual__image" src="/images/hero-journey.webp" onError={e=>{e.currentTarget.onerror=null;e.currentTarget.src='/images/hero-journey.svg'}} alt="Original illustrated Indian bus travelling through a warm, nostalgic town" fetchPriority="high"/><div className="visual__region">Stories across India</div><div className="visual__caption">DISCOVER · EXPLORE · READ</div></div>
+          <div className="visual visual--hero visual--journey"><img className="visual__image" src="/images/hero-journey.webp" onError={e=>{e.currentTarget.onerror=null;e.currentTarget.src='/images/hero-journey.svg'}} alt="Original illustrated Indian bus travelling through a warm, nostalgic town" fetchPriority="high"/><div className="visual__region">The story universe</div><div className="visual__caption">DISCOVER · EXPLORE · READ</div></div>
         </section>
 
         <section className="manifesto" id="why">
