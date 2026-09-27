@@ -34,15 +34,8 @@ const validationCandidates = [
 ]
 
 function Visual({ story, hero = false }) {
-  return (
-    <div className={`visual visual--${story.accent} ${hero ? 'visual--hero' : ''}`}>
-      <div className="visual__ring visual__ring--one" />
-      <div className="visual__ring visual__ring--two" />
-      <div className="visual__glyph">{story.accent === 'amber' ? '✦' : story.accent === 'green' ? '〰' : '↝'}</div>
-      <div className="visual__region">{story.region}</div>
-      <div className="visual__caption">KATHAKHOJ · EDITORIAL SAMPLE</div>
-    </div>
-  )
+  const image = story.accent === 'green' ? '/images/folklore.svg' : story.accent === 'rose' ? '/images/literary-discoveries.svg' : '/images/journeys.svg'
+  return <div className={`visual visual--${story.accent} ${hero ? 'visual--hero' : ''}`}><img className="visual__image" src={image} alt={`Original editorial illustration for ${story.region} storytelling`} loading={hero ? 'eager' : 'lazy'}/><div className="visual__region">{story.region}</div><div className="visual__caption">KATHAKHOJ · EDITORIAL SAMPLE</div></div>
 }
 
 
@@ -294,7 +287,7 @@ function App() {
         <section className="hero">
           <div className="hero__copy">
             <div className="eyebrow"><Sparkles size={15}/> REDISCOVER INDIA THROUGH ITS STORIES</div>
-            <h1>Stories beyond<br/><em>the familiar.</em></h1>
+            <h1>Some stories take you places.<br/><em>Others bring you home.</em></h1>
             <p>Discover lesser-known Indian prose through concise introductions, author context and source-backed reading. Original-language texts and English translations are added as verified.</p>
             <div className="hero__actions">
               <button className="primary" onClick={() => document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}>Start discovering <ArrowRight size={18}/></button>
@@ -306,7 +299,7 @@ function App() {
               <span><Clapperboard size={17}/> Watch</span>
             </div>
           </div>
-          <div className="visual visual--green visual--hero"><div className="visual__glyph">✦</div><div className="visual__region">Stories across India</div><div className="visual__caption">DISCOVER · EXPLORE · READ</div></div>
+          <div className="visual visual--hero visual--journey"><img className="visual__image" src="/images/hero-journey.svg" alt="Original illustrated Indian bus travelling through a warm, nostalgic town" fetchPriority="high"/><div className="visual__region">Stories across India</div><div className="visual__caption">DISCOVER · EXPLORE · READ</div></div>
         </section>
 
         <section className="manifesto" id="why">
@@ -318,12 +311,12 @@ function App() {
           <div className="section-head">
             <div>
               <div className="eyebrow">BEGIN YOUR JOURNEY</div>
-              <h2>Discover lesser-known prose</h2>
+              <h2>Where will your next story take you?</h2>
             </div>
             <p>Browse real works from multiple authors and languages. Each card shows whether its source text is available to read or still needs validation.</p>
           </div>
 
-          <div className="controls" aria-label="Filter all discoveries"><div className="search"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search titles, authors, languages or themes…" /></div><div className="chips">{['All','Malayalam','Bengali','Odia','Assamese','Tamil','Telugu','Kannada','Hindi'].map(f => <button key={f} className={filter === f ? 'chip active' : 'chip'} onClick={() => setFilter(f)}>{f}</button>)}</div></div>
+          <div className="editorial-shelf" aria-label="Explore story themes"><div className="shelf-tile"><img src="/images/journeys.svg" alt="Illustrated Indian railway journey" loading="lazy"/><span>Journeys &amp; memories</span></div><div className="shelf-tile"><img src="/images/literary-discoveries.svg" alt="Illustrated historic library shelves" loading="lazy"/><span>Literary discoveries</span></div><div className="shelf-tile"><img src="/images/folklore.svg" alt="Illustrated Indian village banyan tree" loading="lazy"/><span>Folklore &amp; culture</span></div></div><div className="controls" aria-label="Filter all discoveries"><div className="search"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search titles, authors, languages or themes…" /></div><div className="chips">{['All','Malayalam','Bengali','Odia','Assamese','Tamil','Telugu','Kannada','Hindi'].map(f => <button key={f} className={filter === f ? 'chip active' : 'chip'} onClick={() => setFilter(f)}>{f}</button>)}</div></div>
           <div className="demo-heading"><div className="eyebrow">LESSER-KNOWN DISCOVERIES · ${validationCandidates.length + 1} WORKS</div><h3>Choose a story that catches your interest</h3><p>Real historical works across regional languages. Available source texts open in the reader; other works are clearly marked as awaiting source validation.</p></div>
           <div className="story-grid">
             {(filter === "All" || filter === "Malayalam") && ["ദ്വാരക","Dwaraka","Vengayil Kunhiraman Nayanar","Malayalam"].join(" ").toLowerCase().includes(query.toLowerCase()) && <article className="story-card"><div className="story-card__body"><div className="eyebrow">Malayalam · Historical short story</div><h3>ദ്വാരക · Dwaraka</h3><p><strong>Vengayil Kunhiraman Nayanar</strong> · 1893</p><p><strong>Why explore:</strong> An early Malayalam prose work that offers a glimpse into the beginnings of modern storytelling in the language.</p><div className="candidate-tags"><span>Original Malayalam · source reader</span><span>English pending</span></div><div className="story-card__footer"><span>Source text</span><button onClick={() => openHistorical()}>Explore story <ArrowRight size={17}/></button></div></div></article>}
