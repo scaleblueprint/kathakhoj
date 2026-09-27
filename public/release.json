@@ -1,0 +1,11 @@
+{
+  "app": "KathaKhoj",
+  "release": "storybook-ink-saffron-v3",
+  "assets": [
+    "/images/hero-journey.webp",
+    "/images/journeys.webp",
+    "/images/literary-discoveries.webp",
+    "/images/folklore.webp"
+  ],
+  "expectedFooter": "Storybook · Ink/Saffron · v3"
+}
