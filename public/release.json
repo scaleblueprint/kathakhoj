@@ -1,11 +1,12 @@
 {
   "app": "KathaKhoj",
-  "release": "storybook-ink-saffron-v3",
+  "release": "story-bazaar-v4",
+  "palette": "ink-violet-coral-marigold-lagoon",
+  "hero": "magazine-cover",
   "assets": [
     "/images/hero-journey.webp",
     "/images/journeys.webp",
     "/images/literary-discoveries.webp",
     "/images/folklore.webp"
-  ],
-  "expectedFooter": "Storybook · Ink/Saffron · v3"
+  ]
 }
