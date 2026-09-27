@@ -287,12 +287,12 @@ function App() {
         
         <section className="hero">
           <div className="hero__copy">
-            <div className="eyebrow"><Sparkles size={15}/> ISSUE 001 · THE STORY UNIVERSE</div>
+            <div className="eyebrow"><Sparkles size={15}/> KATHAKHOJ · THE STORY UNIVERSE</div>
             <h1>Every street<br/>has a <em>story.</em></h1>
             <p>Unexpected characters. Familiar places. Extraordinary tales. Explore Indian literature through source-backed stories and new perspectives.</p>
             <div className="hero__actions">
               <button className="primary" onClick={() => document.getElementById('discover')?.scrollIntoView({behavior:'smooth'})}>Start discovering <ArrowRight size={18}/></button>
-              <button className="secondary" onClick={() => { openHistorical() }}><BookOpen size={18}/> Read historical story</button>
+              <button className="secondary" onClick={() => {setCreatorPage(true);setMenu(false);window.scrollTo(0,0)}}><Sparkles size={18}/> Open my Story Lab</button>
             </div>
             <div className="format-strip">
               <span><BookOpen size={17}/> Regional literature</span>
@@ -303,6 +303,15 @@ function App() {
           <div className="visual visual--hero visual--journey"><img className="visual__image" src="/images/hero-journey.webp" onError={e=>{e.currentTarget.onerror=null;e.currentTarget.src='/images/hero-journey.svg'}} alt="Original illustrated Indian bus travelling through a warm, nostalgic town" fetchPriority="high"/><div className="visual__region">The story universe</div><div className="visual__caption">DISCOVER · EXPLORE · READ</div></div>
         </section>
 
+        <section className="lab-invite" aria-labelledby="lab-invite-title">
+          <div className="lab-invite__art"><img src="/images/story-lab.webp" alt="Illustrated creative writing desk for the KathaKhoj Story Lab" loading="lazy"/></div>
+          <div className="lab-invite__copy">
+            <div className="eyebrow">YOUR CREATIVE CORNER</div>
+            <h2 id="lab-invite-title">Your stories. Your episodes. Your world.</h2>
+            <p>Return to your original story series, storytelling modes, episode outlines and manuscripts—all together in your personal Story Lab.</p>
+            <button className="primary" onClick={() => {setCreatorPage(true);setMenu(false);window.scrollTo(0,0)}}>Enter Story Lab <ArrowRight size={18}/></button>
+          </div>
+        </section>
         <section className="manifesto" id="why">
           <p className="quote">“I know India has an extraordinary literary heritage. I just don’t know where to begin.”</p>
           <p className="manifesto__body">KathaKhoj begins with that problem: not a shortage of literature, but a shortage of inviting pathways into it.</p>
