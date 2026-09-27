@@ -262,3 +262,18 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .lab-invite .primary{margin-top:12px;background:#17132f;color:#fff4d9;border-color:#17132f}
 .lab-invite .primary:hover{background:#322653;border-color:#322653}
 @media(max-width:760px){.lab-invite{grid-template-columns:1fr;padding:38px 23px 45px;gap:30px}.lab-invite__art{max-height:280px;box-shadow:8px 8px 0 #ffca45}.lab-invite__art img{min-height:220px;max-height:280px}.lab-invite h2{font-size:clamp(37px,10vw,55px)}}
+
+/* Wide, distraction-free Story Lab reading experience. */
+.story-lab__read-actions{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 24px}.story-lab__read-actions button:disabled{opacity:.4;cursor:not-allowed}
+.episode-reader{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;background:#17132f;color:#fff4d9}
+.episode-reader__toolbar,.episode-reader__footer{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px clamp(14px,3vw,44px);background:#17132f;color:#fff4d9;flex-shrink:0}
+.episode-reader__toolbar{border-bottom:2px solid #ffca45}.episode-reader__identity{display:flex;align-items:center;gap:10px;font-weight:700;min-width:0}.episode-reader__identity span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.episode-reader__tools{display:flex;gap:8px;flex-shrink:0}.episode-reader__toolbar button,.episode-reader__footer button{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#30274d;color:#fff4d9;border:1px solid #8c79ac;border-radius:6px;padding:10px 13px;font-weight:700}.episode-reader__toolbar button:hover,.episode-reader__footer button:hover{background:#493966}.episode-reader__toolbar button:disabled,.episode-reader__footer button:disabled{opacity:.35;cursor:not-allowed}.episode-reader__toolbar .episode-reader__close{background:#ffca45;color:#17132f;border-color:#ffca45}
+.episode-reader__scroll{flex:1;overflow:auto;overscroll-behavior:contain;background:#f0eaf8;scroll-behavior:smooth;outline:none}
+.episode-reader__page{width:min(94%,1120px);min-height:100%;margin:0 auto;padding:clamp(30px,5vw,75px) clamp(22px,7vw,100px) 90px;background:#fff9ee;color:#17132f;box-shadow:0 0 55px #17132f24}
+.episode-reader__page .eyebrow{color:#a33b63}.episode-reader__page h2{font:700 clamp(35px,5vw,66px)/1.12 'Playfair Display',Georgia,serif;letter-spacing:-.03em;margin:18px 0}.episode-reader__series{font-weight:700;color:#665578;border-bottom:1px solid #d7c6df;padding-bottom:24px;margin-bottom:35px}
+.episode-reader__text{max-width:88ch;margin:auto;font:400 var(--reader-size,20px)/1.9 'Playfair Display',Georgia,serif;overflow-wrap:break-word}.episode-reader__text p{margin:0 0 1.5em}.episode-reader__text p:first-child:first-letter{float:left;font-size:3.3em;line-height:.85;padding:.1em .12em 0 0;color:#b63655}
+.episode-reader__outline{max-width:80ch;background:#f0eaf8;border-left:5px solid #15b8ac;padding:24px;line-height:1.8;font-size:var(--reader-size,20px)}
+.episode-reader__footer{border-top:2px solid #15b8ac}.episode-reader__footer span{font-weight:700;white-space:nowrap}
+@media(max-width:600px){.episode-reader__toolbar{padding:10px}.episode-reader__identity span{max-width:115px;font-size:12px}.episode-reader__tools{gap:4px}.episode-reader__toolbar button{padding:8px;font-size:12px}.episode-reader__close span{display:none}.episode-reader__page{width:100%;padding:27px 22px 65px;box-shadow:none}.episode-reader__text{line-height:1.75}.episode-reader__footer{padding:10px}.episode-reader__footer button{font-size:12px;padding:9px}.episode-reader__page h2{font-size:35px}}
+@media(prefers-reduced-motion:reduce){.episode-reader__scroll{scroll-behavior:auto}}
