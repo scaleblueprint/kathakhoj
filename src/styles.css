@@ -63,3 +63,38 @@ footer{display:flex;justify-content:space-between;gap:30px;padding:34px clamp(22
 .summary-panel{padding:28px 30px;margin-bottom:45px;background:var(--paper);border:1px solid var(--line);border-radius:22px}.summary-panel h2{font:700 32px 'Playfair Display',serif;margin:12px 0}.summary-panel p{font-size:17px;line-height:1.75;color:#5c4e45}.language-switch{display:flex;gap:8px;margin:22px 0;flex-wrap:wrap}.language-switch button{padding:10px 15px;border:1px solid var(--line);background:var(--paper);border-radius:999px;color:var(--ink)}.language-switch button.active{background:var(--deep);color:#fff}.source-reading{background:#fffaf3;border:1px solid var(--line);border-radius:20px;padding:25px}.source-reading p{line-height:1.75;color:#51443c}.source-reading a{text-decoration:none;margin:12px 0}
 
 .candidate-card{display:flex;justify-content:space-between;align-items:center;gap:30px;background:#f0e7d7;border:1px solid #d7c3a6;border-radius:24px;padding:30px;margin:30px 0 44px}.candidate-card h3{font:700 clamp(28px,4vw,42px) 'Playfair Display',serif;margin:12px 0}.candidate-card h3 span{font-size:.7em}.candidate-card p{max-width:620px;line-height:1.7}.candidate-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.candidate-tags span{padding:7px 10px;border-radius:20px;background:#fff9ef;font-size:12px}.candidate-card .primary{flex-shrink:0}.demo-heading{border-top:1px solid var(--line);padding-top:25px}.demo-heading h3{font:700 28px 'Playfair Display',serif;margin:8px 0}.demo-heading p{color:#665a50}.preview-status{display:inline-block;background:#f4e3b5;border-radius:20px;padding:9px 14px;font-weight:700;color:#594419}@media(max-width:760px){.candidate-card{display:block}.candidate-card .primary{margin-top:22px}}
+
+
+/* KathaKhoj Living Storybook: distinct from the wellness brand. */
+:root{--ink:#30251e;--cream:#f7f0e3;--paper:#fffaf0;--line:#d6c5ad;--rust:#b45135;--deep:#30251e}
+body{background:var(--cream)}
+.topbar{background:rgba(247,240,227,.96);border-bottom:1px solid #cbbba6}
+.brand{font-family:'Playfair Display',Georgia,serif;font-size:29px}
+.hero{max-width:1600px;grid-template-columns:1fr 1.08fr;gap:clamp(24px,4vw,72px);min-height:650px}
+.hero h1{font-size:clamp(49px,5.6vw,86px);line-height:1.05;letter-spacing:-.045em}
+.hero h1 em{color:var(--rust)}
+.hero__copy>p{max-width:550px}
+.hero .primary{background:var(--rust);border-color:var(--rust)}
+.hero .secondary{border-color:var(--rust);color:var(--rust)}
+.visual{border-radius:8px;box-shadow:0 18px 40px #30251e20;background:#b77952}
+.visual--hero{height:clamp(340px,40vw,570px);border-radius:10px}
+.visual__image{display:block;width:100%;height:100%;object-fit:cover}
+.visual:after{background:linear-gradient(0deg,rgba(29,23,20,.65),transparent 48%)}
+.visual__region{font-size:clamp(23px,3vw,38px)}
+.manifesto{background:#30251e}
+.discover{padding-top:85px}
+.editorial-shelf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:36px 0 44px}
+.shelf-tile{position:relative;min-height:220px;overflow:hidden;background:#493b30;border-radius:8px}
+.shelf-tile img{display:block;width:100%;height:230px;object-fit:cover;transition:transform .35s}
+.shelf-tile:hover img{transform:scale(1.04)}
+.shelf-tile:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,#201711c9)}
+.shelf-tile span{position:absolute;z-index:1;bottom:20px;left:20px;right:12px;color:#fff5e4;font:700 25px/1.1 'Playfair Display',Georgia,serif}
+.story-card{border-radius:9px}
+.story-card .visual{border-radius:0;box-shadow:none}
+.story-card__body{padding:24px}
+.trail{background:#dec39b;border-radius:10px}
+.feedback{background:#a44c34}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #bd7c2d;outline-offset:3px}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.editorial-shelf{grid-template-columns:repeat(3,minmax(0,1fr))}.shelf-tile img{height:190px}.shelf-tile{min-height:190px}.shelf-tile span{font-size:20px}}
+@media(max-width:560px){.hero h1{font-size:clamp(43px,11vw,58px)}.editorial-shelf{grid-template-columns:1fr}.shelf-tile,.shelf-tile img{height:180px;min-height:180px}.visual--hero{height:320px}.hero{gap:26px}}
+@media(prefers-reduced-motion:reduce){.shelf-tile img,.story-card{transition:none!important}}
