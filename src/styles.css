@@ -251,3 +251,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 @media(max-width:900px){.hero{grid-template-columns:1fr}.visual--hero{height:390px}.nav--open{background:#17132f}.shelf-tile{transform:none!important}}
 @media(max-width:560px){.hero{display:flex;flex-direction:column;padding:25px 22px 50px;gap:25px}.hero__copy{display:contents}.hero .eyebrow{order:0;font-size:10px}.hero h1{order:1;font-size:clamp(51px,12vw,70px);margin:0;line-height:.99}.hero>.visual{order:2;width:calc(100% - 13px);height:285px;margin:5px 13px 5px 0;border-width:5px;box-shadow:9px 9px 0 #ff6258,14px 14px 0 #15b8ac}.hero__copy>p{order:3;font-size:16px;line-height:1.55;margin:5px 0}.hero__actions{order:4;margin:0}.format-strip{order:5;margin:0;gap:13px;font-size:12px}.editorial-shelf{gap:23px}.shelf-tile{box-shadow:6px 6px 0 #ffca45}.shelf-tile:nth-child(2){box-shadow:6px 6px 0 #15b8ac}.shelf-tile:nth-child(3){box-shadow:6px 6px 0 #ff6258}.visual__region{font-size:24px}.visual__caption{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.shelf-tile img,.story-card,.primary{transition:none!important}}
+
+/* Story Lab is a first-class homepage destination, not hidden in mobile navigation. */
+.lab-invite{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(25px,5vw,75px);align-items:center;padding:clamp(30px,5vw,75px);background:#15b8ac;color:#17132f;border-block:5px solid #17132f}
+.lab-invite__art{overflow:hidden;border:7px solid #17132f;box-shadow:12px 12px 0 #ffca45;max-height:450px}
+.lab-invite__art img{display:block;width:100%;height:100%;min-height:260px;max-height:450px;object-fit:cover}
+.lab-invite__copy{max-width:690px}.lab-invite .eyebrow{color:#17132f}
+.lab-invite h2{font:700 clamp(38px,4.7vw,72px)/1.03 'Playfair Display',Georgia,serif;letter-spacing:-.04em;margin:15px 0 22px;color:#17132f}
+.lab-invite p{font-size:clamp(16px,1.5vw,20px);line-height:1.6;color:#17383e;max-width:580px}
+.lab-invite .primary{margin-top:12px;background:#17132f;color:#fff4d9;border-color:#17132f}
+.lab-invite .primary:hover{background:#322653;border-color:#322653}
+@media(max-width:760px){.lab-invite{grid-template-columns:1fr;padding:38px 23px 45px;gap:30px}.lab-invite__art{max-height:280px;box-shadow:8px 8px 0 #ffca45}.lab-invite__art img{min-height:220px;max-height:280px}.lab-invite h2{font-size:clamp(37px,10vw,55px)}}
