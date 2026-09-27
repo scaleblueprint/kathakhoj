@@ -375,7 +375,7 @@ function App() {
 
       <footer>
         <div className="brand">Katha<span>Khoj</span></div>
-        <p>A discovery project for India’s lesser-known literary worlds.</p>
+        <p>A discovery project for India’s lesser-known literary worlds. <small className="release-id">Storybook · Ink/Saffron · v3</small></p>
       </footer>
     </div>
   )
